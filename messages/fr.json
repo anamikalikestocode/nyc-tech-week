@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "title": "L'Ami Mauricien — Votre Concierge Digital Premium",
+    "description": "Expériences curatées, gastronomie, culture et transport privé à Maurice. Planifié par l'IA, perfectionné par l'expertise locale."
+  },
+  "nav": {
+    "explore": "Explorer",
+    "regions": "Régions",
+    "experiences": "Expériences",
+    "about": "À propos de Maurice",
+    "myTrips": "Mes Voyages",
+    "login": "Se Connecter",
+    "logout": "Se Déconnecter",
+    "switchLang": "EN"
+  },
+  "hero": {
+    "headline": "Votre Maurice, Sur Mesure",
+    "subheadline": "Expériences premium planifiées par l'IA, perfectionnées par l'expertise locale",
+    "placeholder": "Décrivez votre voyage de rêve à Maurice...",
+    "cta": "Planifier Mon Expérience"
+  },
+  "personas": {
+    "title": "Comment souhaitez-vous explorer ?",
+    "honeymoon": "Lune de miel",
+    "family": "Vacances en famille",
+    "adventure": "Aventure",
+    "relaxLuxury": "Détente & Luxe",
+    "businessLeisure": "Affaires + Loisirs"
+  },
+  "sections": {
+    "featuredExperiences": "Expériences Curatées",
+    "featuredCollections": "Collections Éditoriales",
+    "regions": "Explorer par Région",
+    "categories": "Explorer par Centre d'intérêt",
+    "viewAll": "Voir Tout",
+    "learnMore": "En Savoir Plus",
+    "requestInfo": "Demander des Informations"
+  },
+  "explore": {
+    "label": "Explorer",
+    "title": "Explorer Maurice",
+    "subtitle": "Découvrez des expériences curatées à travers l'île",
+    "curated": "Sélection Pour Vous",
+    "collections": "Collections Éditoriales",
+    "filterByRegion": "Filtrer par Région",
+    "filterByCategory": "Filtrer par Catégorie",
+    "allRegions": "Toutes les Régions",
+    "allCategories": "Toutes les Catégories",
+    "noResults": "Aucune expérience ne correspond à vos filtres.",
+    "partners": "partenaires"
+  },
+  "partner": {
+    "signatureOffers": "Expériences Signature",
+    "openingHours": "Horaires d'ouverture",
+    "location": "Emplacement",
+    "priceRange": "Gamme de prix",
+    "requestInfo": "Demander des Informations",
+    "visitWebsite": "Visiter le Site",
+    "featured": "En vedette"
+  },
+  "assistant": {
+    "title": "L'Ami Mauricien",
+    "subtitle": "Votre concierge personnel",
+    "placeholder": "Posez-moi une question sur Maurice...",
+    "thinking": "Réflexion en cours...",
+    "greeting": "Bonjour ! Je suis L'Ami Mauricien, votre concierge personnel à Maurice. Comment puis-je vous aider à planifier une expérience inoubliable ?",
+    "feedbackThanks": "Merci pour votre retour !"
+  },
+  "itinerary": {
+    "title": "Votre Itinéraire",
+    "day": "Jour",
+    "morning": "Matin",
+    "afternoon": "Après-midi",
+    "evening": "Soirée",
+    "save": "Sauvegarder l'Itinéraire",
+    "export": "Exporter en PDF",
+    "share": "Partager",
+    "edit": "Modifier",
+    "loginToSave": "Connectez-vous pour sauvegarder votre itinéraire"
+  },
+  "auth": {
+    "loginTitle": "Bienvenue chez L'Ami Mauricien",
+    "loginSubtitle": "Connectez-vous avec votre email pour sauvegarder vos voyages",
+    "emailLabel": "Adresse Email",
+    "emailPlaceholder": "votre@email.com",
+    "sendMagicLink": "Envoyer le Lien Magique",
+    "checkEmail": "Vérifiez votre email pour le lien de connexion",
+    "backToHome": "Retour à l'Accueil"
+  },
+  "lead": {
+    "title": "Demander des Informations",
+    "subtitle": "Nous vous mettrons en contact avec ce prestataire",
+    "name": "Votre Nom",
+    "email": "Adresse Email",
+    "phone": "Téléphone (optionnel)",
+    "dates": "Dates de Voyage",
+    "groupSize": "Taille du Groupe",
+    "message": "Votre Message",
+    "messagePlaceholder": "Dites-nous ce que vous recherchez...",
+    "consent": "J'accepte de partager mes coordonnées avec ce prestataire",
+    "submit": "Envoyer la Demande",
+    "success": "Votre demande a été envoyée ! Le prestataire vous contactera prochainement."
+  },
+  "footer": {
+    "tagline": "L'Ami Mauricien",
+    "description": "Un concierge digital curatée pour des expériences premium à Maurice.",
+    "quickLinks": "Liens Rapides",
+    "contact": "Contact",
+    "legal": "Mentions Légales",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions d'Utilisation",
+    "copyright": "© {year} L'Ami Mauricien. Tous droits réservés."
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "title": "L'Ami Mauricien — Your Premium Digital Concierge",
+    "description": "Curated experiences, fine dining, culture, and private transport in Mauritius. Planned by AI, perfected by local expertise."
+  },
+  "nav": {
+    "explore": "Explore",
+    "regions": "Regions",
+    "experiences": "Experiences",
+    "about": "About Mauritius",
+    "myTrips": "My Trips",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "switchLang": "FR"
+  },
+  "hero": {
+    "headline": "Your Mauritius, Curated",
+    "subheadline": "Premium experiences planned by AI, perfected by local expertise",
+    "placeholder": "Tell us about your dream Mauritius trip...",
+    "cta": "Plan My Experience"
+  },
+  "personas": {
+    "title": "How would you like to explore?",
+    "honeymoon": "Honeymoon",
+    "family": "Family Holiday",
+    "adventure": "Adventure",
+    "relaxLuxury": "Relax & Luxury",
+    "businessLeisure": "Business + Leisure"
+  },
+  "sections": {
+    "featuredExperiences": "Curated Experiences",
+    "featuredCollections": "Editorial Collections",
+    "regions": "Explore by Region",
+    "categories": "Explore by Interest",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "requestInfo": "Request Information"
+  },
+  "explore": {
+    "label": "Explore",
+    "title": "Explore Mauritius",
+    "subtitle": "Discover curated experiences across the island",
+    "curated": "Curated For You",
+    "collections": "Editorial Collections",
+    "filterByRegion": "Filter by Region",
+    "filterByCategory": "Filter by Category",
+    "allRegions": "All Regions",
+    "allCategories": "All Categories",
+    "noResults": "No experiences match your filters.",
+    "partners": "partners"
+  },
+  "partner": {
+    "signatureOffers": "Signature Experiences",
+    "openingHours": "Opening Hours",
+    "location": "Location",
+    "priceRange": "Price Range",
+    "requestInfo": "Request Information",
+    "visitWebsite": "Visit Website",
+    "featured": "Featured"
+  },
+  "assistant": {
+    "title": "L'Ami Mauricien",
+    "subtitle": "Your personal concierge",
+    "placeholder": "Ask me anything about Mauritius...",
+    "thinking": "Thinking...",
+    "greeting": "Hello! I'm L'Ami Mauricien, your personal Mauritius concierge. How can I help you plan an unforgettable experience?",
+    "feedbackThanks": "Thank you for your feedback!"
+  },
+  "itinerary": {
+    "title": "Your Itinerary",
+    "day": "Day",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "save": "Save Itinerary",
+    "export": "Export PDF",
+    "share": "Share",
+    "edit": "Edit",
+    "loginToSave": "Sign in to save your itinerary"
+  },
+  "auth": {
+    "loginTitle": "Welcome to L'Ami Mauricien",
+    "loginSubtitle": "Sign in with your email to save trips and access your concierge history",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "your@email.com",
+    "sendMagicLink": "Send Magic Link",
+    "checkEmail": "Check your email for a login link",
+    "backToHome": "Back to Home"
+  },
+  "lead": {
+    "title": "Request Information",
+    "subtitle": "We'll connect you with this experience provider",
+    "name": "Your Name",
+    "email": "Email Address",
+    "phone": "Phone (optional)",
+    "dates": "Travel Dates",
+    "groupSize": "Group Size",
+    "message": "Your Message",
+    "messagePlaceholder": "Tell us what you're looking for...",
+    "consent": "I agree to share my contact details with this provider",
+    "submit": "Send Request",
+    "success": "Your request has been sent! The provider will contact you shortly."
+  },
+  "footer": {
+    "tagline": "The Mauritian Friend",
+    "description": "A curated digital concierge for premium Mauritius experiences.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© {year} L'Ami Mauricien. All rights reserved."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  }
+}
