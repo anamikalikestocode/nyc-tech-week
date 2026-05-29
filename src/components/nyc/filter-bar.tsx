@@ -227,7 +227,7 @@ export function FilterBar(props: FilterBarProps) {
   }
 
   return (
-    <div className="sticky top-0 z-40 border-b border-[#DDD3BD] bg-[#E9E2D3]/88 backdrop-blur-[10px]">
+    <div className="border-b border-[#DDD3BD] bg-[#E9E2D3]">
       <div className="mx-auto max-w-[1200px] px-[22px] py-[14px]">
         {/* Search */}
         <div className="relative mb-3">
