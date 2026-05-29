@@ -12,7 +12,9 @@ import { FilterBar } from "./filter-bar";
 import { EventChat } from "./event-chat";
 
 function getGuestCount(e: TechWeekEvent): number {
-  return e.partiful?.guestCount ?? 0;
+  const p = e.partiful;
+  if (!p) return 0;
+  return p.guestAction === "APPLY" ? p.approvedCount : p.guestCount;
 }
 
 function getFillPct(e: TechWeekEvent): number {

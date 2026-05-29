@@ -17,10 +17,11 @@ function StatCell({ label, value, accent, danger }: { label: string; value: stri
 export default async function NycTechWeekPage() {
   const events = await fetchAllEvents();
 
-  const totalGuests = events.reduce(
-    (sum, e) => sum + (e.partiful?.guestCount ?? 0),
-    0
-  );
+  const totalGuests = events.reduce((sum, e) => {
+    const p = e.partiful;
+    if (!p) return sum;
+    return sum + (p.guestAction === "APPLY" ? p.approvedCount : p.guestCount);
+  }, 0);
   const fullEvents = events.filter((e) => e.partiful?.atCapacity).length;
   const avgApproval = (() => {
     const applyEvents = events.filter(

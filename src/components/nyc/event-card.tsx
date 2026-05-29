@@ -105,11 +105,13 @@ export function EventCard({ event }: { event: TechWeekEvent }) {
       </div>
 
       {/* Attendance + approval */}
-      {p && p.guestCount > 0 && (
+      {p && (p.guestAction === "APPLY" ? p.approvedCount > 0 : p.guestCount > 0) && (
         <div className="flex items-center gap-4">
           <div className="flex shrink-0 items-baseline gap-1">
-            <span className="text-2xl font-extrabold tabular-nums tracking-[-0.03em] text-[#1C1A14]">{p.guestCount.toLocaleString()}</span>
-            <span className="text-[10.5px] text-[#766E5C]">going</span>
+            <span className="text-2xl font-extrabold tabular-nums tracking-[-0.03em] text-[#1C1A14]">
+              {(p.guestAction === "APPLY" ? p.approvedCount : p.guestCount).toLocaleString()}
+            </span>
+            <span className="text-[10.5px] text-[#766E5C]">{p.guestAction === "APPLY" ? "approved" : "going"}</span>
           </div>
           {approvalRate !== null && (
             <div className="min-w-0 flex-1">
