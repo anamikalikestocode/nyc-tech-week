@@ -251,8 +251,8 @@ export function FilterBar(props: FilterBarProps) {
           )}
         </div>
 
-        {/* Sort + count — own row, pinned right */}
-        <div className="mt-2 flex items-center justify-end gap-3">
+        {/* Sort + count — own row, left-aligned */}
+        <div className="mt-2 flex items-center gap-3">
           <SortDropdown value={sort} onChange={onSortChange} />
           <span className="text-[13px] text-[#766E5C]">
             {filteredCount === totalCount ? `${totalCount} events` : `${filteredCount} of ${totalCount}`}
