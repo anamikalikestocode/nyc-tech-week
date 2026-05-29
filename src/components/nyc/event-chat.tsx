@@ -57,7 +57,7 @@ function formatResponse(text: string): string {
   return text
     .replace(
       /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener noreferrer" class="underline decoration-gray-300 underline-offset-2 hover:decoration-gray-900 transition-colors">$1</a>'
+      '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#0A8F5A] underline underline-offset-2 hover:opacity-80 transition-opacity">$1</a>'
     )
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\n/g, "<br />");
@@ -144,24 +144,36 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
   if (!isExpanded) {
     return (
       <div className="mb-6">
-        <button
+        <div
           onClick={() => setIsExpanded(true)}
-          className="group flex w-full items-center gap-3 rounded-2xl border border-gray-200 bg-white px-5 py-5 text-left shadow-sm transition-all hover:border-gray-300 hover:shadow-md"
+          className="flex w-full cursor-pointer items-center gap-4 rounded-[18px] border-[1.5px] border-[#00FF9C]/55 p-4 transition-all duration-[160ms] hover:-translate-y-px hover:border-[#00FF9C] [background:color-mix(in_srgb,#00FF9C_9%,#F7F2E7)] shadow-[0_4px_24px_-8px_rgba(0,255,156,0.22)]"
         >
+          {/* Left glyph tile */}
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-[#00FF9C] text-[22px] text-[#0C0C0A]">
+            ✦
+          </div>
+          {/* Center */}
           <div className="min-w-0 flex-1">
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-              <span className="mr-2 text-3xl sm:text-4xl">💬</span>
+            <h2
+              className="font-extrabold tracking-[-0.025em] text-[#1C1A14]"
+              style={{ fontSize: "clamp(18px,2.4vw,23px)" }}
+            >
               Ask me anything
             </h2>
+            <p className="text-[13px] text-[#766E5C]">NYC Tech Week · live data</p>
           </div>
-        </button>
+          {/* Right CTA — hide on narrow */}
+          <span className="hidden shrink-0 rounded-full bg-[#00FF9C] px-3.5 py-1.5 text-[14px] font-bold text-[#0C0C0A] [min-width:560px]:inline">
+            Try it →
+          </span>
+        </div>
 
         <div className="mt-2 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           {SUGGESTED_PROMPTS.map((prompt) => (
             <button
               key={prompt}
               onClick={() => handlePromptClick(prompt)}
-              className="shrink-0 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-500 transition-colors hover:border-gray-300 hover:text-gray-700"
+              className="shrink-0 rounded-full border border-[#DDD3BD] bg-[#F7F2E7] px-3 py-1.5 text-[13px] text-[#766E5C] transition-colors hover:border-[#CDC1A6] hover:text-[#1C1A14]"
             >
               {prompt}
             </button>
@@ -177,22 +189,22 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
   return (
     <>
       {/* Mobile: full-screen overlay */}
-      <div className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
+      <div className="fixed inset-0 z-50 flex flex-col bg-[#F7F2E7] lg:hidden">
         {/* Drag handle / tap-to-close hint */}
         <div
           className="flex shrink-0 justify-center pt-3 pb-1 cursor-pointer"
           onClick={() => setIsExpanded(false)}
         >
-          <div className="h-1 w-10 rounded-full bg-gray-200" />
+          <div className="h-1 w-10 rounded-full bg-[#DDD3BD]" />
         </div>
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between px-5 pb-2 pt-1">
-          <h2 className="text-xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-xl font-bold tracking-tight text-[#1C1A14]">
             Ask me anything
           </h2>
           <button
             onClick={() => setIsExpanded(false)}
-            className="flex size-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors active:bg-gray-200"
+            className="flex size-8 items-center justify-center rounded-full bg-[#F0E8D9] text-[#766E5C] transition-colors active:bg-[#DDD3BD]"
           >
             <X className="size-4" />
           </button>
@@ -207,7 +219,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
                   <button
                     key={prompt}
                     onClick={() => handlePromptClick(prompt)}
-                    className="rounded-2xl border border-gray-200 px-4 py-3 text-left text-[14px] text-gray-600 transition-colors active:bg-gray-50"
+                    className="rounded-[14px] border border-[#DDD3BD] bg-[#F0E8D9] px-4 py-3 text-left text-[14px] text-[#766E5C] transition-colors active:bg-[#E9E2D3]"
                   >
                     {prompt}
                   </button>
@@ -227,12 +239,12 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
                     <div key={msg.id}>
                       {msg.role === "user" ? (
                         <div className="flex justify-end">
-                          <div className="max-w-[85%] rounded-[20px] rounded-br-md bg-gray-900 px-4 py-3 text-[15px] leading-relaxed text-white">
+                          <div className="max-w-[85%] rounded-[16px] rounded-br-[4px] bg-[#1C1A14] px-4 py-3 text-[15px] leading-relaxed text-[#E9E2D3]">
                             {text}
                           </div>
                         </div>
                       ) : text ? (
-                        <div className="text-[15px] leading-[1.7] text-gray-700 [&_strong]:font-semibold [&_strong]:text-gray-900">
+                        <div className="text-[15px] leading-[1.7] text-[#1C1A14] [&_strong]:font-semibold [&_strong]:text-[#1C1A14]">
                           <div dangerouslySetInnerHTML={{ __html: formatResponse(text) }} />
                         </div>
                       ) : (
@@ -250,10 +262,10 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
         </div>
 
         {/* Input */}
-        <div className="shrink-0 border-t border-gray-100 px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-3">
+        <div className="shrink-0 border-t border-[#DDD3BD] px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-3">
           <form
             onSubmit={onSubmit}
-            className="flex items-end gap-2 rounded-[22px] border border-gray-200 bg-gray-50/80 px-4 py-2.5 transition-colors focus-within:border-gray-300 focus-within:bg-white"
+            className="flex items-end gap-2 rounded-[14px] border border-[#CDC1A6] bg-[#F0E8D9] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
           >
             <textarea
               ref={inputRef}
@@ -266,13 +278,13 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
               onKeyDown={handleKeyDown}
               placeholder="Ask about events..."
               rows={1}
-              className="flex-1 resize-none bg-transparent text-[16px] leading-snug text-gray-900 placeholder:text-gray-400 outline-none"
+              className="flex-1 resize-none bg-transparent text-[16px] leading-snug text-[#1C1A14] placeholder:text-[#A79E89] outline-none"
               style={{ maxHeight: "120px" }}
             />
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-white transition-all disabled:opacity-20"
+              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#1C1A14] text-[#E9E2D3] transition-all disabled:opacity-20"
             >
               <ArrowUp className="size-4" strokeWidth={2.5} />
             </button>
@@ -284,15 +296,15 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
       <div className="fixed inset-0 z-40 hidden lg:block" onClick={() => setIsExpanded(false)} />
 
       {/* Desktop: large inline card */}
-      <div className="mb-6 hidden lg:flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm relative z-50" style={{ height: "min(70vh, 600px)" }}>
+      <div className="mb-6 hidden lg:flex flex-col overflow-hidden rounded-[18px] border border-[#CDC1A6] bg-[#F7F2E7] relative z-50" style={{ height: "min(62vh, 520px)" }}>
         {/* Header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-6 py-3.5">
-          <h2 className="text-lg font-bold tracking-tight text-gray-900">
+        <div className="flex shrink-0 items-center justify-between border-b border-[#DDD3BD] px-6 py-3.5">
+          <h2 className="text-lg font-bold tracking-tight text-[#1C1A14]">
             Ask me anything
           </h2>
           <button
             onClick={() => setIsExpanded(false)}
-            className="flex size-8 items-center justify-center rounded-full bg-gray-100 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
+            className="flex size-8 items-center justify-center rounded-full bg-[#F0E8D9] text-[#766E5C] transition-colors hover:bg-[#DDD3BD]"
           >
             <X className="size-4" />
           </button>
@@ -307,7 +319,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
                   <button
                     key={prompt}
                     onClick={() => handlePromptClick(prompt)}
-                    className="rounded-full border border-gray-200 px-3.5 py-2 text-sm text-gray-500 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+                    className="rounded-full border border-[#DDD3BD] bg-[#F7F2E7] px-3.5 py-2 text-sm text-[#766E5C] transition-colors hover:border-[#CDC1A6] hover:text-[#1C1A14]"
                   >
                     {prompt}
                   </button>
@@ -327,12 +339,12 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
                     <div key={msg.id}>
                       {msg.role === "user" ? (
                         <div className="flex justify-end">
-                          <div className="max-w-[75%] rounded-[20px] rounded-br-md bg-gray-900 px-4 py-3 text-[14px] leading-relaxed text-white">
+                          <div className="max-w-[75%] rounded-[16px] rounded-br-[4px] bg-[#1C1A14] px-4 py-3 text-[14px] leading-relaxed text-[#E9E2D3]">
                             {text}
                           </div>
                         </div>
                       ) : text ? (
-                        <div className="max-w-[90%] text-[14px] leading-[1.7] text-gray-700 [&_strong]:font-semibold [&_strong]:text-gray-900">
+                        <div className="max-w-[90%] text-[14px] leading-[1.7] text-[#1C1A14] [&_strong]:font-semibold [&_strong]:text-[#1C1A14]">
                           <div dangerouslySetInnerHTML={{ __html: formatResponse(text) }} />
                         </div>
                       ) : (
@@ -350,10 +362,10 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
         </div>
 
         {/* Input */}
-        <div className="shrink-0 border-t border-gray-100 px-5 py-3">
+        <div className="shrink-0 border-t border-[#DDD3BD] px-5 py-3">
           <form
             onSubmit={onSubmit}
-            className="flex items-end gap-2 rounded-[22px] border border-gray-200 bg-gray-50/80 px-4 py-2.5 transition-colors focus-within:border-gray-300 focus-within:bg-white"
+            className="flex items-end gap-2 rounded-[14px] border border-[#CDC1A6] bg-[#F0E8D9] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
           >
             <textarea
               value={input}
@@ -365,13 +377,13 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
               onKeyDown={handleKeyDown}
               placeholder="Ask about events, vibes, availability..."
               rows={1}
-              className="flex-1 resize-none bg-transparent text-sm leading-snug text-gray-900 placeholder:text-gray-400 outline-none"
+              className="flex-1 resize-none bg-transparent text-sm leading-snug text-[#1C1A14] placeholder:text-[#A79E89] outline-none"
               style={{ maxHeight: "120px" }}
             />
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gray-900 text-white transition-all disabled:opacity-20"
+              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#1C1A14] text-[#E9E2D3] transition-all disabled:opacity-20"
             >
               <ArrowUp className="size-4" strokeWidth={2.5} />
             </button>
@@ -385,9 +397,9 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
 function TypingIndicator() {
   return (
     <div className="flex items-center gap-1.5 py-2">
-      <span className="size-[6px] animate-bounce rounded-full bg-gray-300" style={{ animationDelay: "0ms", animationDuration: "1s" }} />
-      <span className="size-[6px] animate-bounce rounded-full bg-gray-300" style={{ animationDelay: "150ms", animationDuration: "1s" }} />
-      <span className="size-[6px] animate-bounce rounded-full bg-gray-300" style={{ animationDelay: "300ms", animationDuration: "1s" }} />
+      <span className="size-[6px] animate-bounce rounded-full bg-[#A79E89]" style={{ animationDelay: "0ms", animationDuration: "1s" }} />
+      <span className="size-[6px] animate-bounce rounded-full bg-[#A79E89]" style={{ animationDelay: "150ms", animationDuration: "1s" }} />
+      <span className="size-[6px] animate-bounce rounded-full bg-[#A79E89]" style={{ animationDelay: "300ms", animationDuration: "1s" }} />
     </div>
   );
 }

@@ -4,6 +4,16 @@ import { EventDirectory } from "@/components/nyc/event-directory";
 
 export const revalidate = 300;
 
+function StatCell({ label, value, accent, danger }: { label: string; value: string; accent?: boolean; danger?: boolean }) {
+  const valueColor = danger ? "text-[#D8442B]" : accent ? "text-[#0A8F5A]" : "text-[#1C1A14]";
+  return (
+    <div className="flex flex-col items-center px-5 py-3">
+      <span className={"text-xl font-extrabold tabular-nums tracking-[-0.02em] " + valueColor}>{value}</span>
+      <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#766E5C]">{label}</span>
+    </div>
+  );
+}
+
 export default async function NycTechWeekPage() {
   const events = await fetchAllEvents();
 
@@ -27,45 +37,39 @@ export default async function NycTechWeekPage() {
   })();
 
   return (
-    <main className="min-h-screen bg-gray-950">
-      <div className="border-b border-gray-800 bg-gray-950">
-        <div className="mx-auto max-w-7xl px-4 py-8">
-          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            NYC Tech Week — What Partiful Does{" "}
-            <span className="underline decoration-red-400 decoration-wavy underline-offset-4">
-              NOT
-            </span>{" "}
-            Show You
+    <main className="min-h-screen bg-[#E9E2D3]">
+      <div className="border-b border-[#DDD3BD] bg-[#E9E2D3]">
+        <div className="mx-auto max-w-[1200px] px-[22px] pb-8 pt-10">
+          {/* Kicker row: pulsing live dot + "Live" in accentStr + "Jun 1–7 · Unofficial" in muted */}
+          <div className="mb-4 flex items-center gap-3.5">
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#0A8F5A]">
+              <span className="relative flex size-[7px]">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#00FF9C] opacity-75" />
+                <span className="relative inline-flex size-[7px] rounded-full bg-[#00FF9C]" />
+              </span>
+              Live
+            </span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#766E5C]">Jun 1–7, 2026 · Unofficial</span>
+          </div>
+
+          {/* H1 — clamp(36px,5.4vw,60px), extrabold, tracking -0.035em, line-height 0.98 */}
+          <h1 className="font-extrabold leading-[0.98] tracking-[-0.035em] text-[#1C1A14]" style={{ fontSize: "clamp(36px,5.4vw,60px)" }}>
+            NYC Tech Week
           </h1>
-          <p className="mt-2 text-sm text-gray-400 sm:text-base">
-            a16z tech week website is kinda bad so here is a better one
+
+          {/* Lede */}
+          <p className="mt-3 max-w-[600px] text-base leading-[1.55] text-[#766E5C]">
+            The a16z tech week website is kinda bad, so here&apos;s a better one. Filters that are
+            actually helpful — and the live numbers the official calendar hides: who&apos;s going,
+            how full it is, and your real odds of getting in.
           </p>
 
-          {/* Ticker-style stats */}
-          <div className="mt-4 flex w-fit flex-wrap items-stretch divide-x divide-gray-800 border border-gray-800">
-            <div className="flex items-center gap-2 px-3 py-2 font-mono text-xs">
-              <span className="uppercase tracking-widest text-gray-500">EVT</span>
-              <span className="font-black text-[#00FF9C]">{events.length.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 font-mono text-xs">
-              <span className="uppercase tracking-widest text-gray-500">RSVPs</span>
-              <span className="font-black text-[#00FF9C]">{totalGuests.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 font-mono text-xs">
-              <span className="uppercase tracking-widest text-gray-500">FULL</span>
-              <span className="font-black text-[#FF3B30]">{fullEvents}</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 font-mono text-xs">
-              <span className="uppercase tracking-widest text-gray-500">AVG APPR</span>
-              <span className="font-black text-[#00FF9C]">{avgApproval}%</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 font-mono text-xs">
-              <span className="relative flex size-1.5">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#00FF9C] opacity-75" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-[#00FF9C]" />
-              </span>
-              <span className="uppercase tracking-widest text-gray-500">LIVE</span>
-            </div>
+          {/* Stat ticker */}
+          <div className="mt-5 flex w-fit items-stretch divide-x divide-[#CDC1A6] rounded-xl border border-[#CDC1A6] bg-[#F7F2E7]">
+            <StatCell label="Events" value={events.length.toLocaleString()} />
+            <StatCell label="RSVPs" value={totalGuests.toLocaleString()} accent />
+            <StatCell label="Full" value={String(fullEvents)} danger />
+            <StatCell label="Avg approval" value={`${avgApproval}%`} accent />
           </div>
         </div>
       </div>

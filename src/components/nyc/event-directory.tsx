@@ -161,7 +161,7 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-[#E9E2D3]">
       <FilterBar
         search={search}
         onSearchChange={setSearch}
@@ -183,22 +183,22 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
         filteredCount={filtered.length}
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-6">
+      <div className="mx-auto max-w-[1200px] px-[22px] py-6">
         <EventChat events={events} />
 
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="mb-4 text-4xl text-gray-300">—</div>
-            <h3 className="mb-1 text-lg font-semibold text-white">
+            <div className="mb-4 text-4xl text-[#A79E89]">—</div>
+            <h3 className="mb-1 text-[17px] font-bold text-[#1C1A14]">
               No events found
             </h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-[#766E5C]">
               Try adjusting your filters or search query
             </p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
               {visible.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
@@ -207,7 +207,7 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
               <div className="mt-8 flex justify-center">
                 <button
                   onClick={loadMore}
-                  className="rounded-full border border-gray-700 bg-gray-800 px-6 py-2.5 text-sm font-medium text-gray-300 transition-all hover:border-[#00FF9C] hover:text-[#00FF9C]"
+                  className="rounded-full border border-[#CDC1A6] bg-[#F7F2E7] px-6 py-2.5 text-[13px] font-semibold text-[#766E5C] hover:border-[#00FF9C] hover:text-[#0A8F5A] transition-all"
                 >
                   Load more ({sorted.length - visibleCount} remaining)
                 </button>

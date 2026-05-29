@@ -9,6 +9,9 @@ import {
 import { Search, X, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
+// TOPIC_COLORS kept for API compatibility (passed as colorMap prop type)
+void TOPIC_COLORS;
+
 interface FilterBarProps {
   search: string;
   onSearchChange: (v: string) => void;
@@ -39,16 +42,8 @@ const SORT_OPTIONS = [
 
 const TIMES = ["Morning", "Afternoon", "Evening", "Noon"];
 
-const DOT_COLORS: Record<string, string> = {
-  blue: "bg-blue-500",
-  green: "bg-emerald-500",
-  red: "bg-red-500",
-  yellow: "bg-yellow-400",
-};
-
-function topicDotClass(topic: string): string {
-  const key = TOPIC_COLORS[topic] ?? "";
-  return DOT_COLORS[key] ?? "bg-gray-500";
+function toggle(arr: string[], val: string): string[] {
+  return arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val];
 }
 
 function TogglePill({
@@ -65,10 +60,10 @@ function TogglePill({
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 rounded-sm border px-3 py-1.5 text-xs font-medium font-mono transition-all ${
+      className={`shrink-0 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
         active
-          ? "border-[#00FF9C] bg-[#00FF9C] text-gray-900"
-          : "border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600"
+          ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
+          : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89] hover:text-[#1C1A14]"
       } ${className}`}
     >
       {label}
@@ -76,16 +71,11 @@ function TogglePill({
   );
 }
 
-function toggle(arr: string[], val: string): string[] {
-  return arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val];
-}
-
 function DropdownFilter({
   label,
   options,
   selected,
   onChange,
-  colorMap,
 }: {
   label: string;
   options: string[];
@@ -95,51 +85,41 @@ function DropdownFilter({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    }
+    function handleClick(e: MouseEvent) { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
-
   return (
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className={`flex shrink-0 items-center gap-1 rounded-sm border px-3 py-1.5 text-xs font-medium font-mono transition-all ${
+        className={`flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
           selected.length > 0
-            ? "border-[#00FF9C] bg-[#00FF9C] text-gray-900"
-            : "border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600"
+            ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
+            : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
         }`}
       >
         {label}
         {selected.length > 0 && (
-          <span className="flex size-4 items-center justify-center rounded-full bg-gray-900 text-[10px] text-[#00FF9C]">
-            {selected.length}
-          </span>
+          <span className="flex size-4 items-center justify-center rounded-full bg-[#0C0C0A]/10 text-[10px] font-bold">{selected.length}</span>
         )}
         <ChevronDown className="size-3" />
       </button>
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1 max-h-64 w-56 overflow-y-auto rounded-xl border border-gray-700 bg-gray-900 p-1.5 shadow-lg shadow-black/40">
+        <div className="absolute left-0 top-full z-50 mt-1.5 max-h-[290px] w-[230px] overflow-y-auto rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] p-1.5 shadow-[0_8px_24px_-8px_rgba(40,30,10,0.18)]">
           {options.map((opt) => {
             const isActive = selected.includes(opt);
-            const color = colorMap?.[opt];
             return (
               <button
                 key={opt}
                 onClick={() => onChange(toggle(selected, opt))}
-                className={`flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs font-mono transition-colors ${
-                  isActive ? "bg-gray-800 font-medium text-[#00FF9C]" : "text-gray-400 hover:bg-gray-800 hover:text-gray-300"
+                className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors ${
+                  isActive ? "font-semibold text-[#0A8F5A]" : "text-[#766E5C] hover:bg-[#F0E8D9] hover:text-[#1C1A14]"
                 }`}
               >
-                {color && (
-                  <span className={"size-1.5 rounded-full shrink-0 " + topicDotClass(opt)} />
-                )}
+                <span className="w-4 shrink-0 text-center text-[11px]">{isActive ? "✓" : ""}</span>
                 <span className="truncate">{opt}</span>
-                {isActive && <span className="ml-auto text-[#00FF9C]">✓</span>}
               </button>
             );
           })}
@@ -174,17 +154,17 @@ function SortDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className={`flex shrink-0 items-center gap-1 rounded-sm border px-3 py-1.5 text-xs font-medium font-mono transition-all ${
+        className={`flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
           isNonDefault
-            ? "border-[#00FF9C] bg-[#00FF9C] text-gray-900"
-            : "border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600"
+            ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
+            : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
         }`}
       >
         Sort: {current.label}
         <ChevronDown className="size-3" />
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-xl border border-gray-700 bg-gray-900 p-1.5 shadow-lg shadow-black/40">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-44 rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] p-1.5 shadow-[0_8px_24px_-8px_rgba(40,30,10,0.18)]">
           {SORT_OPTIONS.map((opt) => {
             const isActive = value === opt.value;
             return (
@@ -194,14 +174,14 @@ function SortDropdown({
                   onChange(opt.value);
                   setOpen(false);
                 }}
-                className={`flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs font-mono transition-colors ${
+                className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors ${
                   isActive
-                    ? "bg-gray-800 font-medium text-[#00FF9C]"
-                    : "text-gray-400 hover:bg-gray-800 hover:text-gray-300"
+                    ? "font-semibold text-[#0A8F5A]"
+                    : "text-[#766E5C] hover:bg-[#F0E8D9] hover:text-[#1C1A14]"
                 }`}
               >
+                <span className="w-4 shrink-0 text-center text-[11px]">{isActive ? "✓" : ""}</span>
                 <span className="truncate">{opt.label}</span>
-                {isActive && <span className="ml-auto text-[#00FF9C]">✓</span>}
               </button>
             );
           })}
@@ -253,89 +233,66 @@ export function FilterBar(props: FilterBarProps) {
   }
 
   return (
-    <div className="sticky top-0 z-40 border-b border-gray-800 bg-gray-950/95 backdrop-blur-xl">
-      <div className="mx-auto max-w-7xl px-4 py-3">
+    <div className="sticky top-0 z-40 border-b border-[#DDD3BD] bg-[#E9E2D3]/88 backdrop-blur-[10px]">
+      <div className="mx-auto max-w-[1200px] px-[22px] py-[14px]">
         {/* Search */}
         <div className="relative mb-3">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-500" />
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#A79E89]" />
           <input
             type="text"
-            placeholder="Search events, hosts, topics..."
+            placeholder="Search events, hosts, topics…"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full rounded-xl border border-gray-700 bg-gray-900 py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-gray-600 outline-none transition-all focus:border-gray-500"
+            className="h-11 w-full rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] pl-10 pr-10 text-[14px] text-[#1C1A14] placeholder:text-[#A79E89] outline-none transition-all duration-[160ms] focus:border-[#00FF9C] focus:shadow-[0_0_0_3px_rgba(0,255,156,0.18)]"
           />
           {search && (
-            <button
-              onClick={() => onSearchChange("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
-            >
+            <button onClick={() => onSearchChange("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A79E89] hover:text-[#766E5C]">
               <X className="size-4" />
             </button>
           )}
         </div>
 
         {/* Day pills */}
-        <div className="mb-2 flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-          {DAYS.map((day) => (
-            <TogglePill
-              key={day.value}
-              label={day.label}
-              active={selectedDays.includes(day.value)}
-              onClick={() => onDaysChange(toggle(selectedDays, day.value))}
-            />
-          ))}
+        <div className="mb-2.5 flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+          {DAYS.map((day) => {
+            const dow = day.label.split(" ")[0]; // "Mon"
+            const dateNum = day.label.split(" ").pop(); // "1"
+            const isActive = selectedDays.includes(day.value);
+            return (
+              <button
+                key={day.value}
+                onClick={() => onDaysChange(toggle(selectedDays, day.value))}
+                className={`flex shrink-0 flex-col items-center rounded-[10px] border px-[13px] py-2 transition-all duration-[160ms] ${
+                  isActive
+                    ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
+                    : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
+                }`}
+              >
+                <span className="text-[12px] font-bold leading-none">{dow}</span>
+                <span className={`mt-0.5 text-[11px] leading-none ${isActive ? "text-[#0C0C0A]/70" : "text-[#A79E89]"}`}>{dateNum}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Dropdowns + toggles */}
-        <div className="flex flex-wrap items-center gap-2 pb-1">
-          <DropdownFilter
-            label="Topic"
-            options={TOPICS}
-            selected={selectedTopics}
-            onChange={onTopicsChange}
-            colorMap={TOPIC_COLORS}
-          />
-          <DropdownFilter
-            label="Time"
-            options={TIMES}
-            selected={selectedTimes}
-            onChange={onTimesChange}
-          />
-          <DropdownFilter
-            label="Neighborhood"
-            options={NEIGHBORHOODS}
-            selected={selectedNeighborhoods}
-            onChange={onNeighborhoodsChange}
-          />
-          <TogglePill
-            label="Hide Invite-Only"
-            active={hideInviteOnly}
-            onClick={() => onHideInviteOnlyChange(!hideInviteOnly)}
-          />
-          <TogglePill
-            label="Almost Full"
-            active={showAlmostFull}
-            onClick={() => onShowAlmostFullChange(!showAlmostFull)}
-          />
-
+        {/* Filter row */}
+        <div className="flex flex-wrap items-center gap-2">
+          <DropdownFilter label="Topic" options={TOPICS} selected={selectedTopics} onChange={onTopicsChange} colorMap={TOPIC_COLORS} />
+          <DropdownFilter label="Time" options={TIMES} selected={selectedTimes} onChange={onTimesChange} />
+          <DropdownFilter label="Neighborhood" options={NEIGHBORHOODS} selected={selectedNeighborhoods} onChange={onNeighborhoodsChange} />
+          <TogglePill label="Hide invite-only" active={hideInviteOnly} onClick={() => onHideInviteOnlyChange(!hideInviteOnly)} />
+          <TogglePill label="Almost full" active={showAlmostFull} onClick={() => onShowAlmostFullChange(!showAlmostFull)} />
           {hasFilters && (
-            <button
-              onClick={clearAll}
-              className="shrink-0 flex items-center gap-1 rounded-full border border-red-800 bg-red-900/30 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-900/50 transition-colors"
-            >
-              <X className="size-3" />
-              Clear all
+            <button onClick={clearAll} className="flex shrink-0 items-center gap-1 rounded-full border border-[#D8442B]/35 bg-[#D8442B]/9 px-3 py-[7px] text-[13px] font-medium text-[#D8442B] transition-colors hover:bg-[#D8442B]/15">
+              <X className="size-3" /> Clear all
             </button>
           )}
-
-          <SortDropdown value={sort} onChange={onSortChange} />
-
-          <span className="ml-auto shrink-0 font-mono text-xs text-gray-400">
-            {filteredCount === totalCount
-              ? `${totalCount} events`
-              : `${filteredCount} of ${totalCount}`}
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <SortDropdown value={sort} onChange={onSortChange} />
+            <span className="shrink-0 text-[13px] text-[#766E5C]">
+              {filteredCount === totalCount ? `${totalCount} events` : `${filteredCount} of ${totalCount}`}
+            </span>
+          </div>
         </div>
       </div>
     </div>
