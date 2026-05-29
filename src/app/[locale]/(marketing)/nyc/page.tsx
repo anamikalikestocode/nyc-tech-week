@@ -40,7 +40,7 @@ export default async function NycTechWeekPage() {
   return (
     <main className="min-h-screen bg-[#E9E2D3]">
       <div className="border-b border-[#DDD3BD] bg-[#E9E2D3]">
-        <div className="mx-auto max-w-[1200px] px-[22px] pb-8 pt-10">
+        <div className="mx-auto max-w-[1200px] px-[22px] pb-3 pt-10">
           {/* H1 — clamp(36px,5.4vw,60px), extrabold, tracking -0.035em, line-height 0.98 */}
           <h1 className="font-extrabold leading-[0.98] tracking-[-0.035em] text-[#1C1A14]" style={{ fontSize: "clamp(36px,5.4vw,60px)" }}>
             NYC Tech Week

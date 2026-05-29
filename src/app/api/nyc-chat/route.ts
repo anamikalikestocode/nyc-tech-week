@@ -59,8 +59,19 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: anthropic("claude-sonnet-4-6"),
-    system: systemPrompt,
-    messages: normalizeMessages(messages),
+    messages: [
+      {
+        role: "system",
+        content: systemPrompt,
+        // Cache the large system + event-context block. The first message
+        // writes the cache; every follow-up in the ~5-min window hits it,
+        // cutting time-to-first-token (and cost) dramatically.
+        providerOptions: {
+          anthropic: { cacheControl: { type: "ephemeral" } },
+        },
+      },
+      ...normalizeMessages(messages),
+    ],
   });
 
   return result.toTextStreamResponse();

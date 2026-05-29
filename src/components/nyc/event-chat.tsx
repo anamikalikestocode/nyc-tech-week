@@ -87,10 +87,10 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
   const scrollToBottom = useCallback(() => {
     for (const ref of [scrollRef, desktopScrollRef]) {
       if (ref.current) {
-        ref.current.scrollTo({
-          top: ref.current.scrollHeight,
-          behavior: "smooth",
-        });
+        // Instant scroll, not "smooth" — on mobile, firing a smooth-scroll
+        // animation on every token-stream tick thrashes the GPU and makes
+        // the streamed text appear to lag/stutter.
+        ref.current.scrollTop = ref.current.scrollHeight;
       }
     }
   }, []);
@@ -110,13 +110,6 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
-
-  useEffect(() => {
-    if (status === "streaming") {
-      const interval = setInterval(scrollToBottom, 80);
-      return () => clearInterval(interval);
-    }
-  }, [status, scrollToBottom]);
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
