@@ -59,7 +59,7 @@ function DropdownFilter({
   return (
     <>
       {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />}
-      <div className="relative z-50">
+      <div className={`relative ${open ? "z-50" : ""}`}>
         <button
           onClick={() => setOpen(!open)}
           className={`touch-manipulation flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
@@ -113,7 +113,7 @@ function SortDropdown({
   return (
     <>
       {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />}
-      <div className="relative z-50">
+      <div className={`relative ${open ? "z-50" : ""}`}>
         <button
           onClick={() => setOpen(!open)}
           className={`touch-manipulation flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
