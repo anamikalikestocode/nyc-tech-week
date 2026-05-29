@@ -388,7 +388,15 @@ async function _fetchAllEventsImpl(): Promise<TechWeekEvent[]> {
         isInviteOnly: raw.isInviteOnly,
         topics,
         formats,
-        timeOfDay: (raw.facets?.time?.label as TechWeekEvent["timeOfDay"]) ?? "Evening",
+        timeOfDay: (() => {
+          const label = (raw.facets?.time?.label as TechWeekEvent["timeOfDay"]) ?? "Evening";
+          // Don't classify 12am–5am as Evening — exclude from time filters
+          if (raw.time) {
+            const hour = parseInt(raw.time.split(":")[0], 10);
+            if (hour >= 0 && hour < 6) return "Morning" as const;
+          }
+          return label;
+        })(),
       });
     }
 
