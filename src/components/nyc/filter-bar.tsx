@@ -231,7 +231,7 @@ export function FilterBar(props: FilterBarProps) {
         </div>
 
         {/* Filter pills row */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5">
+        <div className="flex flex-wrap gap-2">
           <DropdownFilter label="Topic" options={TOPICS} selected={selectedTopics} onChange={onTopicsChange} colorMap={TOPIC_COLORS} />
           <DropdownFilter label="Time" options={TIMES} selected={selectedTimes} onChange={onTimesChange} />
           <DropdownFilter label="Neighborhood" options={NEIGHBORHOODS} selected={selectedNeighborhoods} onChange={onNeighborhoodsChange} />
