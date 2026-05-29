@@ -249,14 +249,12 @@ export function FilterBar(props: FilterBarProps) {
               <X className="size-3" /> Clear all
             </button>
           )}
-        </div>
-
-        {/* Sort + count — always on its own row, pinned right */}
-        <div className="mt-2 flex items-center justify-end gap-3">
-          <SortDropdown value={sort} onChange={onSortChange} />
-          <span className="shrink-0 text-[13px] text-[#766E5C]">
-            {filteredCount === totalCount ? `${totalCount} events` : `${filteredCount} of ${totalCount}`}
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <SortDropdown value={sort} onChange={onSortChange} />
+            <span className="shrink-0 text-[13px] text-[#766E5C]">
+              {filteredCount === totalCount ? `${totalCount} events` : `${filteredCount} of ${totalCount}`}
+            </span>
+          </div>
         </div>
       </div>
     </div>
