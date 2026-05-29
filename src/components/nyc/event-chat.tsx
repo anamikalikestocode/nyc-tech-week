@@ -121,6 +121,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
+    if (!isExpanded) setIsExpanded(true);
     sendMessage({ text: input.trim() });
     setInput("");
     if (inputRef.current) {
@@ -179,6 +180,32 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
             </button>
           ))}
         </div>
+
+        <form
+          onSubmit={onSubmit}
+          className="mt-2 flex items-center gap-2 rounded-[14px] border border-[#CDC1A6] bg-[#F0E8D9] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
+        >
+          <textarea
+            value={input}
+            onChange={(e) => {
+              setInput(e.target.value);
+              e.target.style.height = "auto";
+              e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask about events, vibes, availability…"
+            rows={1}
+            className="flex-1 resize-none bg-transparent text-[15px] leading-snug text-[#1C1A14] placeholder:text-[#A79E89] outline-none"
+            style={{ maxHeight: "120px" }}
+          />
+          <button
+            type="submit"
+            disabled={isLoading || !input.trim()}
+            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#1C1A14] text-[#E9E2D3] transition-all disabled:opacity-20"
+          >
+            <ArrowUp className="size-4" strokeWidth={2.5} />
+          </button>
+        </form>
       </div>
     );
   }
@@ -265,7 +292,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
         <div className="shrink-0 border-t border-[#DDD3BD] px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-3">
           <form
             onSubmit={onSubmit}
-            className="flex items-end gap-2 rounded-[14px] border border-[#CDC1A6] bg-[#F0E8D9] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
+            className="flex items-center gap-2 rounded-[14px] border border-[#CDC1A6] bg-[#F0E8D9] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
           >
             <textarea
               ref={inputRef}
@@ -365,7 +392,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
         <div className="shrink-0 border-t border-[#DDD3BD] px-5 py-3">
           <form
             onSubmit={onSubmit}
-            className="flex items-end gap-2 rounded-[14px] border border-[#CDC1A6] bg-[#F0E8D9] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
+            className="flex items-center gap-2 rounded-[14px] border border-[#CDC1A6] bg-[#F0E8D9] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
           >
             <textarea
               value={input}
