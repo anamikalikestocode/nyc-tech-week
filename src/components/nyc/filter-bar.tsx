@@ -7,7 +7,7 @@ import {
   TOPIC_COLORS,
 } from "@/lib/data/events";
 import { Search, X, ChevronDown } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 
 // TOPIC_COLORS kept for API compatibility (passed as colorMap prop type)
 void TOPIC_COLORS;
@@ -56,48 +56,45 @@ function DropdownFilter({
   colorMap?: Record<string, string>;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    function handleClick(e: MouseEvent) { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
   return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className={`touch-manipulation flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
-          selected.length > 0
-            ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
-            : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
-        }`}
-      >
-        {label}
-        {selected.length > 0 && (
-          <span className="flex size-4 items-center justify-center rounded-full bg-[#0C0C0A]/10 text-[10px] font-bold">{selected.length}</span>
+    <>
+      {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />}
+      <div className="relative z-50">
+        <button
+          onClick={() => setOpen(!open)}
+          className={`touch-manipulation flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
+            selected.length > 0
+              ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
+              : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
+          }`}
+        >
+          {label}
+          {selected.length > 0 && (
+            <span className="flex size-4 items-center justify-center rounded-full bg-[#0C0C0A]/10 text-[10px] font-bold">{selected.length}</span>
+          )}
+          <ChevronDown className="size-3" />
+        </button>
+        {open && (
+          <div className="absolute left-0 top-full mt-1.5 max-h-[290px] w-[230px] overflow-y-auto rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] p-1.5 shadow-[0_8px_24px_-8px_rgba(40,30,10,0.18)]">
+            {options.map((opt) => {
+              const isActive = selected.includes(opt);
+              return (
+                <button
+                  key={opt}
+                  onClick={() => onChange(toggle(selected, opt))}
+                  className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors ${
+                    isActive ? "font-semibold text-[#0A8F5A]" : "text-[#766E5C] hover:bg-[#F0E8D9] hover:text-[#1C1A14]"
+                  }`}
+                >
+                  <span className="w-4 shrink-0 text-center text-[11px]">{isActive ? "✓" : ""}</span>
+                  <span className="truncate">{opt}</span>
+                </button>
+              );
+            })}
+          </div>
         )}
-        <ChevronDown className="size-3" />
-      </button>
-      {open && (
-        <div className="absolute left-0 top-full z-50 mt-1.5 max-h-[290px] w-[230px] overflow-y-auto rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] p-1.5 shadow-[0_8px_24px_-8px_rgba(40,30,10,0.18)]">
-          {options.map((opt) => {
-            const isActive = selected.includes(opt);
-            return (
-              <button
-                key={opt}
-                onClick={() => onChange(toggle(selected, opt))}
-                className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors ${
-                  isActive ? "font-semibold text-[#0A8F5A]" : "text-[#766E5C] hover:bg-[#F0E8D9] hover:text-[#1C1A14]"
-                }`}
-              >
-                <span className="w-4 shrink-0 text-center text-[11px]">{isActive ? "✓" : ""}</span>
-                <span className="truncate">{opt}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -109,57 +106,51 @@ function SortDropdown({
   onChange: (v: string) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
 
   const current = SORT_OPTIONS.find((o) => o.value === value) ?? SORT_OPTIONS[0];
   const isNonDefault = value !== "date";
 
   return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className={`touch-manipulation flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
-          isNonDefault
-            ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
-            : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
-        }`}
-      >
-        Sort: {current.label}
-        <ChevronDown className="size-3" />
-      </button>
-      {open && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-44 rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] p-1.5 shadow-[0_8px_24px_-8px_rgba(40,30,10,0.18)]">
-          {SORT_OPTIONS.map((opt) => {
-            const isActive = value === opt.value;
-            return (
-              <button
-                key={opt.value}
-                onClick={() => {
-                  onChange(opt.value);
-                  setOpen(false);
-                }}
-                className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors ${
-                  isActive
-                    ? "font-semibold text-[#0A8F5A]"
-                    : "text-[#766E5C] hover:bg-[#F0E8D9] hover:text-[#1C1A14]"
-                }`}
-              >
-                <span className="w-4 shrink-0 text-center text-[11px]">{isActive ? "✓" : ""}</span>
-                <span className="truncate">{opt.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
+    <>
+      {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />}
+      <div className="relative z-50">
+        <button
+          onClick={() => setOpen(!open)}
+          className={`touch-manipulation flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
+            isNonDefault
+              ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
+              : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
+          }`}
+        >
+          Sort: {current.label}
+          <ChevronDown className="size-3" />
+        </button>
+        {open && (
+          <div className="absolute right-0 top-full mt-1.5 w-44 rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] p-1.5 shadow-[0_8px_24px_-8px_rgba(40,30,10,0.18)]">
+            {SORT_OPTIONS.map((opt) => {
+              const isActive = value === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => {
+                    onChange(opt.value);
+                    setOpen(false);
+                  }}
+                  className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors ${
+                    isActive
+                      ? "font-semibold text-[#0A8F5A]"
+                      : "text-[#766E5C] hover:bg-[#F0E8D9] hover:text-[#1C1A14]"
+                  }`}
+                >
+                  <span className="w-4 shrink-0 text-center text-[11px]">{isActive ? "✓" : ""}</span>
+                  <span className="truncate">{opt.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
