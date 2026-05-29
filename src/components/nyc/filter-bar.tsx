@@ -66,7 +66,7 @@ function DropdownFilter({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className={`flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
+        className={`touch-manipulation flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
           selected.length > 0
             ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
             : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
@@ -126,7 +126,7 @@ function SortDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className={`flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
+        className={`touch-manipulation flex shrink-0 items-center gap-1.5 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
           isNonDefault
             ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
             : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
@@ -226,7 +226,7 @@ export function FilterBar(props: FilterBarProps) {
               <button
                 key={day.value}
                 onClick={() => onDaysChange(toggle(selectedDays, day.value))}
-                className={`flex shrink-0 flex-col items-center rounded-[10px] border px-[13px] py-2 transition-all duration-[160ms] ${
+                className={`touch-manipulation flex shrink-0 flex-col items-center rounded-[10px] border px-[13px] py-2 transition-all duration-[160ms] ${
                   isActive
                     ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
                     : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89]"
