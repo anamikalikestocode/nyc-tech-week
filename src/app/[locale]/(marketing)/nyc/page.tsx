@@ -41,18 +41,6 @@ export default async function NycTechWeekPage() {
     <main className="min-h-screen bg-[#E9E2D3]">
       <div className="border-b border-[#DDD3BD] bg-[#E9E2D3]">
         <div className="mx-auto max-w-[1200px] px-[22px] pb-8 pt-10">
-          {/* Kicker row: pulsing live dot + "Live" in accentStr + "Jun 1–7 · Unofficial" in muted */}
-          <div className="mb-4 flex items-center gap-3.5">
-            <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#0A8F5A]">
-              <span className="relative flex size-[7px]">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#00FF9C] opacity-75" />
-                <span className="relative inline-flex size-[7px] rounded-full bg-[#00FF9C]" />
-              </span>
-              Live
-            </span>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#766E5C]">Jun 1–7, 2026 · Unofficial</span>
-          </div>
-
           {/* H1 — clamp(36px,5.4vw,60px), extrabold, tracking -0.035em, line-height 0.98 */}
           <h1 className="font-extrabold leading-[0.98] tracking-[-0.035em] text-[#1C1A14]" style={{ fontSize: "clamp(36px,5.4vw,60px)" }}>
             NYC Tech Week
