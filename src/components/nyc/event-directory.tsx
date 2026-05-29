@@ -81,10 +81,6 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
     "open",
     parseAsBoolean.withDefault(false)
   );
-  const [showAlmostFull, setShowAlmostFull] = useQueryState(
-    "almostFull",
-    parseAsBoolean.withDefault(false)
-  );
   const [sort, setSort] = useQueryState(
     "sort",
     parseAsString.withDefault("date")
@@ -121,17 +117,6 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
 
       if (hideInviteOnly && e.isInviteOnly) return false;
 
-      if (showAlmostFull) {
-        const p = e.partiful;
-        if (!p) return false;
-        const isAlmostFull =
-          p.atCapacity ||
-          (p.guestAction === "APPLY" &&
-            p.pendingCount + p.approvedCount > 30 &&
-            p.pendingCount > p.approvedCount);
-        if (!isAlmostFull) return false;
-      }
-
       if (q) {
         const haystack =
           `${e.name} ${e.company} ${e.topics.join(" ")} ${e.location}`.toLowerCase();
@@ -148,7 +133,6 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
     selectedTimes,
     selectedNeighborhoods,
     hideInviteOnly,
-    showAlmostFull,
   ]);
 
   const sorted = useMemo(() => sortEvents(filtered, sort), [filtered, sort]);
@@ -175,8 +159,6 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
         onNeighborhoodsChange={setSelectedNeighborhoods}
         hideInviteOnly={hideInviteOnly}
         onHideInviteOnlyChange={setHideInviteOnly}
-        showAlmostFull={showAlmostFull}
-        onShowAlmostFullChange={setShowAlmostFull}
         sort={sort}
         onSortChange={setSort}
         totalCount={events.length}

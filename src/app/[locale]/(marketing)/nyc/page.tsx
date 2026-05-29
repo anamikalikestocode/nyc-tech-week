@@ -59,9 +59,7 @@ export default async function NycTechWeekPage() {
 
           {/* Lede */}
           <p className="mt-3 max-w-[600px] text-base leading-[1.55] text-[#766E5C]">
-            The a16z tech week website is kinda bad, so here&apos;s a better one. Filters that are
-            actually helpful — and the live numbers the official calendar hides: who&apos;s going,
-            how full it is, and your real odds of getting in.
+            The a16z tech week website is kinda bad, so here&apos;s a better one.
           </p>
 
           {/* Stat ticker */}

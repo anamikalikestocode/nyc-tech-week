@@ -173,7 +173,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
             <button
               key={prompt}
               onClick={() => handlePromptClick(prompt)}
-              className="shrink-0 rounded-full border border-[#DDD3BD] bg-[#F7F2E7] px-3 py-1.5 text-[13px] text-[#766E5C] transition-colors hover:border-[#CDC1A6] hover:text-[#1C1A14]"
+              className="shrink-0 rounded-full border border-[#00FF9C]/50 bg-[#00FF9C]/15 px-3 py-1.5 text-[13px] font-medium text-[#0A8F5A] transition-colors hover:bg-[#00FF9C]/25 hover:border-[#00FF9C]"
             >
               {prompt}
             </button>
@@ -219,7 +219,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
                   <button
                     key={prompt}
                     onClick={() => handlePromptClick(prompt)}
-                    className="rounded-[14px] border border-[#DDD3BD] bg-[#F0E8D9] px-4 py-3 text-left text-[14px] text-[#766E5C] transition-colors active:bg-[#E9E2D3]"
+                    className="rounded-[14px] border border-[#00FF9C]/50 bg-[#00FF9C]/15 px-4 py-3 text-left text-[14px] font-medium text-[#0A8F5A] transition-colors active:bg-[#00FF9C]/25"
                   >
                     {prompt}
                   </button>
@@ -319,7 +319,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
                   <button
                     key={prompt}
                     onClick={() => handlePromptClick(prompt)}
-                    className="rounded-full border border-[#DDD3BD] bg-[#F7F2E7] px-3.5 py-2 text-sm text-[#766E5C] transition-colors hover:border-[#CDC1A6] hover:text-[#1C1A14]"
+                    className="rounded-full border border-[#00FF9C]/50 bg-[#00FF9C]/15 px-3.5 py-2 text-sm font-medium text-[#0A8F5A] transition-colors hover:bg-[#00FF9C]/25 hover:border-[#00FF9C]"
                   >
                     {prompt}
                   </button>

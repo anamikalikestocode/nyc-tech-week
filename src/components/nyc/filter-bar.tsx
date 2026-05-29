@@ -25,8 +25,6 @@ interface FilterBarProps {
   onNeighborhoodsChange: (v: string[]) => void;
   hideInviteOnly: boolean;
   onHideInviteOnlyChange: (v: boolean) => void;
-  showAlmostFull: boolean;
-  onShowAlmostFullChange: (v: boolean) => void;
   sort: string;
   onSortChange: (v: string) => void;
   totalCount: number;
@@ -205,8 +203,6 @@ export function FilterBar(props: FilterBarProps) {
     onNeighborhoodsChange,
     hideInviteOnly,
     onHideInviteOnlyChange,
-    showAlmostFull,
-    onShowAlmostFullChange,
     sort,
     onSortChange,
     totalCount,
@@ -219,8 +215,7 @@ export function FilterBar(props: FilterBarProps) {
     selectedTopics.length > 0 ||
     selectedTimes.length > 0 ||
     selectedNeighborhoods.length > 0 ||
-    hideInviteOnly ||
-    showAlmostFull;
+    hideInviteOnly;
 
   function clearAll() {
     onSearchChange("");
@@ -229,7 +224,6 @@ export function FilterBar(props: FilterBarProps) {
     onTimesChange([]);
     onNeighborhoodsChange([]);
     onHideInviteOnlyChange(false);
-    onShowAlmostFullChange(false);
   }
 
   return (
@@ -281,7 +275,6 @@ export function FilterBar(props: FilterBarProps) {
           <DropdownFilter label="Time" options={TIMES} selected={selectedTimes} onChange={onTimesChange} />
           <DropdownFilter label="Neighborhood" options={NEIGHBORHOODS} selected={selectedNeighborhoods} onChange={onNeighborhoodsChange} />
           <TogglePill label="Hide invite-only" active={hideInviteOnly} onClick={() => onHideInviteOnlyChange(!hideInviteOnly)} />
-          <TogglePill label="Almost full" active={showAlmostFull} onClick={() => onShowAlmostFullChange(!showAlmostFull)} />
           {hasFilters && (
             <button onClick={clearAll} className="flex shrink-0 items-center gap-1 rounded-full border border-[#D8442B]/35 bg-[#D8442B]/9 px-3 py-[7px] text-[13px] font-medium text-[#D8442B] transition-colors hover:bg-[#D8442B]/15">
               <X className="size-3" /> Clear all
