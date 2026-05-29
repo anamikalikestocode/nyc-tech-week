@@ -141,19 +141,15 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
     }
   }
 
-  // Collapsed state — inline card
+  // Collapsed state — unified card with embedded input
   if (!isExpanded) {
     return (
-      <div className="mb-6">
-        <div
-          onClick={() => setIsExpanded(true)}
-          className="flex w-full cursor-pointer items-center gap-4 rounded-[18px] border-[1.5px] border-[#00FF9C]/55 p-4 transition-all duration-[160ms] hover:-translate-y-px hover:border-[#00FF9C] [background:color-mix(in_srgb,#00FF9C_9%,#F7F2E7)] shadow-[0_4px_24px_-8px_rgba(0,255,156,0.22)]"
-        >
-          {/* Left glyph tile */}
+      <div className="mb-6 rounded-[18px] border-[1.5px] border-[#00FF9C]/55 [background:color-mix(in_srgb,#00FF9C_9%,#F7F2E7)] shadow-[0_4px_24px_-8px_rgba(0,255,156,0.22)] transition-all duration-[160ms] hover:border-[#00FF9C]">
+        {/* Header row */}
+        <div className="flex items-center gap-4 p-4 pb-3">
           <div className="flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-[#00FF9C] text-[22px] text-[#0C0C0A]">
             ✦
           </div>
-          {/* Center */}
           <div className="min-w-0 flex-1">
             <h2
               className="font-extrabold tracking-[-0.025em] text-[#1C1A14]"
@@ -163,13 +159,10 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
             </h2>
             <p className="text-[13px] text-[#766E5C]">NYC Tech Week · live data</p>
           </div>
-          {/* Right CTA — hide on narrow */}
-          <span className="hidden shrink-0 rounded-full bg-[#00FF9C] px-3.5 py-1.5 text-[14px] font-bold text-[#0C0C0A] [min-width:560px]:inline">
-            Try it →
-          </span>
         </div>
 
-        <div className="mt-2 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {/* Prompt chips */}
+        <div className="flex gap-2 overflow-x-auto px-4 pb-3 scrollbar-hide">
           {SUGGESTED_PROMPTS.map((prompt) => (
             <button
               key={prompt}
@@ -181,31 +174,34 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
           ))}
         </div>
 
-        <form
-          onSubmit={onSubmit}
-          className="mt-2 flex items-center gap-2 rounded-[14px] border border-[#CDC1A6] bg-[#F0E8D9] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
-        >
-          <textarea
-            value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              e.target.style.height = "auto";
-              e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-            }}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask about events, vibes, availability…"
-            rows={1}
-            className="flex-1 resize-none bg-transparent text-[15px] leading-snug text-[#1C1A14] placeholder:text-[#A79E89] outline-none"
-            style={{ maxHeight: "120px" }}
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !input.trim()}
-            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#1C1A14] text-[#E9E2D3] transition-all disabled:opacity-20"
+        {/* Input — sits inside the card, separated by a hairline */}
+        <div className="border-t border-[#00FF9C]/25 px-3 pb-3 pt-2.5">
+          <form
+            onSubmit={onSubmit}
+            className="flex items-center gap-2 rounded-[12px] border border-[#CDC1A6] bg-[#F7F2E7] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
           >
-            <ArrowUp className="size-4" strokeWidth={2.5} />
-          </button>
-        </form>
+            <textarea
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
+                e.target.style.height = "auto";
+                e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask about events, vibes, availability…"
+              rows={1}
+              className="flex-1 resize-none bg-transparent text-[15px] leading-snug text-[#1C1A14] placeholder:text-[#A79E89] outline-none"
+              style={{ maxHeight: "120px" }}
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#1C1A14] text-[#E9E2D3] transition-all disabled:opacity-20"
+            >
+              <ArrowUp className="size-4" strokeWidth={2.5} />
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
