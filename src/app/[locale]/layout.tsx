@@ -2,7 +2,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { ChatSheet } from "@/components/assistant/chat-sheet";
+import { ConditionalChatSheet } from "@/components/assistant/conditional-chat-sheet";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -26,7 +26,7 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages}>
       <div className="flex min-h-screen flex-col">{children}</div>
-      <ChatSheet />
+      <ConditionalChatSheet />
     </NextIntlClientProvider>
   );
 }
