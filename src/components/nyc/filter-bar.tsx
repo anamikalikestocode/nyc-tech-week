@@ -239,26 +239,24 @@ export function FilterBar(props: FilterBarProps) {
           })}
         </div>
 
-        {/* Filter row */}
-        <div className="flex items-center gap-2">
-          {/* Scrollable filter pills — take remaining space */}
-          <div className="flex flex-1 gap-2 overflow-x-auto scrollbar-hide">
-            <DropdownFilter label="Topic" options={TOPICS} selected={selectedTopics} onChange={onTopicsChange} colorMap={TOPIC_COLORS} />
-            <DropdownFilter label="Time" options={TIMES} selected={selectedTimes} onChange={onTimesChange} />
-            <DropdownFilter label="Neighborhood" options={NEIGHBORHOODS} selected={selectedNeighborhoods} onChange={onNeighborhoodsChange} />
-            {hasFilters && (
-              <button onClick={clearAll} className="flex shrink-0 items-center gap-1 rounded-full border border-[#D8442B]/35 bg-[#D8442B]/9 px-3 py-[7px] text-[13px] font-medium text-[#D8442B] transition-colors hover:bg-[#D8442B]/15">
-                <X className="size-3" /> Clear all
-              </button>
-            )}
-          </div>
-          {/* Sort + count — always pinned right, never wraps */}
-          <div className="flex shrink-0 items-center gap-2 pl-1">
-            <SortDropdown value={sort} onChange={onSortChange} />
-            <span className="shrink-0 text-[13px] text-[#766E5C]">
-              {filteredCount === totalCount ? `${totalCount} events` : `${filteredCount} of ${totalCount}`}
-            </span>
-          </div>
+        {/* Filter pills row */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5">
+          <DropdownFilter label="Topic" options={TOPICS} selected={selectedTopics} onChange={onTopicsChange} colorMap={TOPIC_COLORS} />
+          <DropdownFilter label="Time" options={TIMES} selected={selectedTimes} onChange={onTimesChange} />
+          <DropdownFilter label="Neighborhood" options={NEIGHBORHOODS} selected={selectedNeighborhoods} onChange={onNeighborhoodsChange} />
+          {hasFilters && (
+            <button onClick={clearAll} className="flex shrink-0 items-center gap-1 rounded-full border border-[#D8442B]/35 bg-[#D8442B]/9 px-3 py-[7px] text-[13px] font-medium text-[#D8442B] transition-colors hover:bg-[#D8442B]/15">
+              <X className="size-3" /> Clear all
+            </button>
+          )}
+        </div>
+
+        {/* Sort + count — own row, pinned right */}
+        <div className="mt-2 flex items-center justify-end gap-3">
+          <SortDropdown value={sort} onChange={onSortChange} />
+          <span className="text-[13px] text-[#766E5C]">
+            {filteredCount === totalCount ? `${totalCount} events` : `${filteredCount} of ${totalCount}`}
+          </span>
         </div>
       </div>
     </div>
