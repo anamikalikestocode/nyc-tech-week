@@ -23,8 +23,6 @@ interface FilterBarProps {
   onTimesChange: (v: string[]) => void;
   selectedNeighborhoods: string[];
   onNeighborhoodsChange: (v: string[]) => void;
-  hideInviteOnly: boolean;
-  onHideInviteOnlyChange: (v: boolean) => void;
   sort: string;
   onSortChange: (v: string) => void;
   totalCount: number;
@@ -44,30 +42,6 @@ function toggle(arr: string[], val: string): string[] {
   return arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val];
 }
 
-function TogglePill({
-  label,
-  active,
-  onClick,
-  className = "",
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-  className?: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`shrink-0 rounded-full border px-[13px] py-[7px] text-[13px] font-medium transition-all duration-[160ms] ${
-        active
-          ? "border-[#00FF9C] bg-[#00FF9C] text-[#0C0C0A]"
-          : "border-[#CDC1A6] bg-[#F7F2E7] text-[#766E5C] hover:border-[#A79E89] hover:text-[#1C1A14]"
-      } ${className}`}
-    >
-      {label}
-    </button>
-  );
-}
 
 function DropdownFilter({
   label,
@@ -201,8 +175,6 @@ export function FilterBar(props: FilterBarProps) {
     onTimesChange,
     selectedNeighborhoods,
     onNeighborhoodsChange,
-    hideInviteOnly,
-    onHideInviteOnlyChange,
     sort,
     onSortChange,
     totalCount,
@@ -214,8 +186,7 @@ export function FilterBar(props: FilterBarProps) {
     selectedDays.length > 0 ||
     selectedTopics.length > 0 ||
     selectedTimes.length > 0 ||
-    selectedNeighborhoods.length > 0 ||
-    hideInviteOnly;
+    selectedNeighborhoods.length > 0;
 
   function clearAll() {
     onSearchChange("");
@@ -223,7 +194,6 @@ export function FilterBar(props: FilterBarProps) {
     onTopicsChange([]);
     onTimesChange([]);
     onNeighborhoodsChange([]);
-    onHideInviteOnlyChange(false);
   }
 
   return (
@@ -274,18 +244,19 @@ export function FilterBar(props: FilterBarProps) {
           <DropdownFilter label="Topic" options={TOPICS} selected={selectedTopics} onChange={onTopicsChange} colorMap={TOPIC_COLORS} />
           <DropdownFilter label="Time" options={TIMES} selected={selectedTimes} onChange={onTimesChange} />
           <DropdownFilter label="Neighborhood" options={NEIGHBORHOODS} selected={selectedNeighborhoods} onChange={onNeighborhoodsChange} />
-          <TogglePill label="Hide invite-only" active={hideInviteOnly} onClick={() => onHideInviteOnlyChange(!hideInviteOnly)} />
           {hasFilters && (
             <button onClick={clearAll} className="flex shrink-0 items-center gap-1 rounded-full border border-[#D8442B]/35 bg-[#D8442B]/9 px-3 py-[7px] text-[13px] font-medium text-[#D8442B] transition-colors hover:bg-[#D8442B]/15">
               <X className="size-3" /> Clear all
             </button>
           )}
-          <div className="ml-auto flex items-center gap-3">
-            <SortDropdown value={sort} onChange={onSortChange} />
-            <span className="shrink-0 text-[13px] text-[#766E5C]">
-              {filteredCount === totalCount ? `${totalCount} events` : `${filteredCount} of ${totalCount}`}
-            </span>
-          </div>
+        </div>
+
+        {/* Sort + count — always on its own row, pinned right */}
+        <div className="mt-2 flex items-center justify-end gap-3">
+          <SortDropdown value={sort} onChange={onSortChange} />
+          <span className="shrink-0 text-[13px] text-[#766E5C]">
+            {filteredCount === totalCount ? `${totalCount} events` : `${filteredCount} of ${totalCount}`}
+          </span>
         </div>
       </div>
     </div>

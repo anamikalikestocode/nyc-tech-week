@@ -5,7 +5,6 @@ import {
   useQueryState,
   parseAsArrayOf,
   parseAsString,
-  parseAsBoolean,
 } from "nuqs";
 import type { TechWeekEvent } from "@/lib/data/events";
 import { EventCard } from "./event-card";
@@ -77,10 +76,6 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
     "hood",
     parseAsArrayOf(parseAsString).withDefault([])
   );
-  const [hideInviteOnly, setHideInviteOnly] = useQueryState(
-    "open",
-    parseAsBoolean.withDefault(false)
-  );
   const [sort, setSort] = useQueryState(
     "sort",
     parseAsString.withDefault("date")
@@ -115,8 +110,6 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
       )
         return false;
 
-      if (hideInviteOnly && e.isInviteOnly) return false;
-
       if (q) {
         const haystack =
           `${e.name} ${e.company} ${e.topics.join(" ")} ${e.location}`.toLowerCase();
@@ -132,7 +125,6 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
     selectedTopics,
     selectedTimes,
     selectedNeighborhoods,
-    hideInviteOnly,
   ]);
 
   const sorted = useMemo(() => sortEvents(filtered, sort), [filtered, sort]);
@@ -157,8 +149,6 @@ export function EventDirectory({ events }: { events: TechWeekEvent[] }) {
         onTimesChange={setSelectedTimes}
         selectedNeighborhoods={selectedNeighborhoods}
         onNeighborhoodsChange={setSelectedNeighborhoods}
-        hideInviteOnly={hideInviteOnly}
-        onHideInviteOnlyChange={setHideInviteOnly}
         sort={sort}
         onSortChange={setSort}
         totalCount={events.length}

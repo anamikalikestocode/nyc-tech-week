@@ -63,7 +63,7 @@ export default async function NycTechWeekPage() {
           </p>
 
           {/* Stat ticker */}
-          <div className="mt-5 flex w-fit items-stretch divide-x divide-[#CDC1A6] rounded-xl border border-[#CDC1A6] bg-[#F7F2E7]">
+          <div className="mt-5 grid w-full grid-cols-4 items-stretch divide-x divide-[#CDC1A6] rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] sm:w-fit sm:flex">
             <StatCell label="Events" value={events.length.toLocaleString()} />
             <StatCell label="RSVPs" value={totalGuests.toLocaleString()} accent />
             <StatCell label="Full" value={String(fullEvents)} danger />
