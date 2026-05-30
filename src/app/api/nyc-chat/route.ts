@@ -53,6 +53,21 @@ function normalizeMessages(
 export async function POST(req: Request) {
   const { messages, eventContext } = await req.json();
 
+  const normalized = normalizeMessages(messages);
+
+  // Lightweight query logging: emit only the latest user question + timestamp
+  // to the (ephemeral) Vercel function logs. No IP, no identifiers, no storage.
+  const lastUserQuery = [...normalized]
+    .reverse()
+    .find((m) => m.role === "user");
+  if (lastUserQuery) {
+    console.log(
+      `[nyc-chat] ${new Date().toISOString()} q=${JSON.stringify(
+        lastUserQuery.content.replace(/\s+/g, " ").slice(0, 500)
+      )}`
+    );
+  }
+
   const systemPrompt = eventContext
     ? `${BASE_SYSTEM_PROMPT}\n\n${eventContext}`
     : BASE_SYSTEM_PROMPT;
@@ -70,7 +85,7 @@ export async function POST(req: Request) {
           anthropic: { cacheControl: { type: "ephemeral" } },
         },
       },
-      ...normalizeMessages(messages),
+      ...normalized,
     ],
   });
 
