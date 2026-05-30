@@ -48,13 +48,34 @@ export async function scrapePartifulEvent(
     const event = nextData?.props?.pageProps?.event;
     if (!event) return null;
 
+    // Partiful removed the top-level `guestCount` and `pendingGuestCount`
+    // fields from the public payload. We now derive them from the fields
+    // that remain: `respondedGuestCount` (everyone who engaged) minus the
+    // accounted-for buckets leaves the pending-approval pile.
+    const responded = event.respondedGuestCount ?? 0;
+    const approved = event.approvedGuestCount ?? 0;
+    const going = event.goingGuestCount ?? 0;
+    const interested = event.interestedGuestCount ?? 0;
+    const maybe = event.maybeGuestCount ?? 0;
+    const waitlist = event.waitlistGuestCount ?? 0;
+
+    // Pending = responded minus every status we can see (clamp at 0).
+    const pending = Math.max(
+      0,
+      responded - approved - going - interested - maybe - waitlist
+    );
+    // Confirmed-guest headline: RSVP events use `going`, APPLY events use
+    // `approved`; fall back to `responded` if neither is populated.
+    const guestCount =
+      going > 0 ? going : approved > 0 ? approved : responded;
+
     return {
-      guestCount: event.guestCount ?? 0,
-      pendingCount: event.pendingGuestCount ?? 0,
-      approvedCount: event.approvedGuestCount ?? 0,
-      goingCount: event.goingGuestCount ?? 0,
-      interestedCount: event.interestedGuestCount ?? 0,
-      waitlistCount: event.waitlistGuestCount ?? 0,
+      guestCount: event.guestCount ?? guestCount,
+      pendingCount: event.pendingGuestCount ?? pending,
+      approvedCount: approved,
+      goingCount: going,
+      interestedCount: interested,
+      waitlistCount: waitlist,
       atCapacity: event.atCapacity ?? false,
       isCapped: event.isCapped ?? false,
       rsvpsEnabled: event.rsvpsEnabled ?? false,
