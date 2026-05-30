@@ -1,5 +1,6 @@
 import { streamText } from "ai";
 import { createAnthropic } from "@ai-sdk/anthropic";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const anthropic = createAnthropic({
   apiKey: process.env.CLAUDE_API_KEY,
@@ -55,17 +56,28 @@ export async function POST(req: Request) {
 
   const normalized = normalizeMessages(messages);
 
-  // Lightweight query logging: emit only the latest user question + timestamp
-  // to the (ephemeral) Vercel function logs. No IP, no identifiers, no storage.
+  // Query analytics: persist only the latest user question + timestamp.
+  // No IP, no identifiers, no user id — anonymous usage logging only.
   const lastUserQuery = [...normalized]
     .reverse()
     .find((m) => m.role === "user");
   if (lastUserQuery) {
-    console.log(
-      `[nyc-chat] ${new Date().toISOString()} q=${JSON.stringify(
-        lastUserQuery.content.replace(/\s+/g, " ").slice(0, 500)
-      )}`
-    );
+    const query = lastUserQuery.content.replace(/\s+/g, " ").slice(0, 500);
+    // turn_index = how many user turns deep this message is (coarse signal,
+    // not identifying). Helps distinguish first-asks from follow-ups.
+    const turnIndex = normalized.filter((m) => m.role === "user").length - 1;
+
+    console.log(`[nyc-chat] ${new Date().toISOString()} q=${JSON.stringify(query)}`);
+
+    // Fire-and-forget: never block or fail the chat response on a logging error.
+    if (query.length > 0) {
+      void createAdminClient()
+        .from("nyc_chat_queries")
+        .insert({ query, turn_index: turnIndex })
+        .then(({ error }) => {
+          if (error) console.error("[nyc-chat] log insert failed:", error.message);
+        });
+    }
   }
 
   const systemPrompt = eventContext
