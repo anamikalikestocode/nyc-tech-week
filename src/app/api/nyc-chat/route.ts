@@ -69,14 +69,21 @@ export async function POST(req: Request) {
 
     console.log(`[nyc-chat] ${new Date().toISOString()} q=${JSON.stringify(query)}`);
 
-    // Fire-and-forget: never block or fail the chat response on a logging error.
+    // Fire-and-forget: logging must NEVER block or break the chat response.
+    // The try/catch guards against synchronous throws too (e.g. a missing
+    // SUPABASE env var makes createAdminClient() throw immediately).
     if (query.length > 0) {
-      void createAdminClient()
-        .from("nyc_chat_queries")
-        .insert({ query, turn_index: turnIndex })
-        .then(({ error }) => {
-          if (error) console.error("[nyc-chat] log insert failed:", error.message);
-        });
+      try {
+        void createAdminClient()
+          .from("nyc_chat_queries")
+          .insert({ query, turn_index: turnIndex })
+          .then(({ error }) => {
+            if (error) console.error("[nyc-chat] log insert failed:", error.message);
+          })
+          .catch((e) => console.error("[nyc-chat] log insert threw:", e));
+      } catch (e) {
+        console.error("[nyc-chat] logging skipped:", e);
+      }
     }
   }
 
