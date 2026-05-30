@@ -183,7 +183,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
               onKeyDown={handleKeyDown}
               placeholder="Ask about events, vibes, availability…"
               rows={1}
-              className="flex-1 resize-none bg-transparent text-[15px] leading-snug text-[#1C1A14] placeholder:text-[#A79E89] outline-none"
+              className="flex-1 resize-none bg-transparent text-[16px] leading-snug text-[#1C1A14] placeholder:text-[#A79E89] outline-none"
               style={{ maxHeight: "120px" }}
             />
             <button
