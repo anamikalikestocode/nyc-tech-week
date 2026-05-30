@@ -74,13 +74,17 @@ export async function POST(req: Request) {
     // SUPABASE env var makes createAdminClient() throw immediately).
     if (query.length > 0) {
       try {
+        // Two-arg .then handles both the resolved {error} and a rejection.
+        // Supabase's builder is a PromiseLike (no .catch), so we can't chain.
         void createAdminClient()
           .from("nyc_chat_queries")
           .insert({ query, turn_index: turnIndex })
-          .then(({ error }) => {
-            if (error) console.error("[nyc-chat] log insert failed:", error.message);
-          })
-          .catch((e) => console.error("[nyc-chat] log insert threw:", e));
+          .then(
+            ({ error }) => {
+              if (error) console.error("[nyc-chat] log insert failed:", error.message);
+            },
+            (e) => console.error("[nyc-chat] log insert threw:", e)
+          );
       } catch (e) {
         console.error("[nyc-chat] logging skipped:", e);
       }
