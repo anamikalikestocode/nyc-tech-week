@@ -13,37 +13,51 @@ const SUGGESTED_PROMPTS = [
 ];
 
 function buildEventContext(events: TechWeekEvent[]): string {
-  const lines = events
-    .filter((e) => e.partiful)
-    .sort((a, b) => (b.partiful?.guestCount ?? 0) - (a.partiful?.guestCount ?? 0))
-    .slice(0, 200)
+  // Feed the model EVERY event (not just the top 200 by guest count, which
+  // made it recommend the same mega-events over and over). Lines are kept
+  // compact so the full ~1,600-event block stays token-reasonable; the API
+  // route marks it for Anthropic prompt caching, so follow-ups in a ~5-min
+  // window reuse it for near-free. Sorted by date/time (neutral ordering) so
+  // the model isn't primed toward the biggest events.
+  const lines = [...events]
+    .sort((a, b) => {
+      const d = a.date.localeCompare(b.date);
+      return d !== 0 ? d : a.time.localeCompare(b.time);
+    })
     .map((e) => {
-      const p = e.partiful!;
-      const total = p.approvedCount + p.pendingCount;
-      const approvalRate =
-        p.guestAction === "APPLY" && total > 0
-          ? Math.round((p.approvedCount / total) * 100)
-          : null;
-      return [
-        e.name,
-        `by ${e.company}`,
-        e.date,
-        e.time,
-        e.location,
-        `${p.guestCount} guests`,
-        p.atCapacity ? "FULL" : "open",
-        approvalRate !== null ? `${approvalRate}% approval` : "",
-        p.guestAction === "APPLY" ? "application-based" : "direct RSVP",
+      // Trim seconds off "18:00:00" -> "18:00".
+      const time = e.time ? e.time.slice(0, 5) : "";
+      const place = e.partiful?.neighborhood || e.location || "";
+      const parts = [e.name, e.company, `${e.date} ${time}`.trim(), place];
+
+      const p = e.partiful;
+      if (p) {
+        const total = p.approvedCount + p.pendingCount;
+        const approvalRate =
+          p.guestAction === "APPLY" && total > 0
+            ? Math.round((p.approvedCount / total) * 100)
+            : null;
+        const count = p.guestAction === "APPLY" ? p.approvedCount : p.guestCount;
+        parts.push(
+          `${count} ${p.guestAction === "APPLY" ? "appr" : "going"}`,
+          approvalRate !== null ? `${approvalRate}% rate` : "",
+          p.atCapacity ? "FULL" : "",
+          p.guestAction === "APPLY" ? "APPLY" : "RSVP"
+        );
+      } else {
+        parts.push("no RSVP data");
+      }
+
+      parts.push(
         e.topics.join("/"),
         e.isInviteOnly ? "invite-only" : "",
-        e.url ? e.url : "",
-      ]
-        .filter(Boolean)
-        .join(" | ");
+        e.url || ""
+      );
+      return parts.filter(Boolean).join(" | ");
     })
     .join("\n");
 
-  return `Here are the top 200 NYC Tech Week events with live Partiful data:\n${lines}`;
+  return `Here are ALL ${events.length} NYC Tech Week events. Fields per line: name | host | date time | location | attendance (Xgoing/appr) | approval rate | FULL? | RSVP-or-APPLY | topics | invite-only? | url. Events without live data are marked "no RSVP data".\n${lines}`;
 }
 
 function getMessageText(msg: { parts: Array<{ type: string; text?: string }> }): string {
