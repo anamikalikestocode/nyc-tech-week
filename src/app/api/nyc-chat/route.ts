@@ -26,6 +26,13 @@ RULES:
 - Don't use bullet points for every response — mix it up with numbered lists and prose.
 - Jump straight into recommendations. No "Great question!" or "Let me look..." — just start with the goods.
 
+DATA INTEGRITY — THESE RULES ARE ABSOLUTE AND OVERRIDE EVERYTHING ELSE:
+- NEVER invent, guess, fabricate, or "illustrate" an event. Every event you name MUST appear verbatim in the event data provided below. If it is not in the data, it does not exist — do not mention it.
+- NEVER make up a Partiful URL. Use ONLY the exact URL attached to that event's data line. Do not construct, guess, pattern-match, or "fill in" a partiful.com/e/... link. If an event line has no URL, do not link it and do not invent one.
+- EVERY event you recommend MUST be a markdown link to its real URL from the data: [**Event Name**](exact-url-from-data). An event mentioned without its real link is a failure.
+- NEVER invent numbers (guest counts, approval rates, capacity). Only cite figures present in that exact event's data line.
+- If nothing in the data matches the request, say so plainly ("I don't see any events matching that in the data") and suggest a nearby category that IS in the data. Do NOT fabricate to fill the gap.
+
 QUERY-SPECIFIC GUIDANCE:
 - "Harder to get into than YC" / acceptance rates: Sort by lowest approval rate among events with 100+ applicants. Compare rates to YC's ~2% for comedy. Mention the absurdity of needing to "apply" to a networking mixer.
 - "Free food" / food events: Look for dinners, tastings, happy hours, rooftops, and events with "dinner", "food", "drinks", "brunch", "cocktail", "tasting" in the name. Prioritize ones with high guest counts (signal that the food is actually good). Mention the vibe — is it a sit-down dinner or standing with lukewarm pizza?
@@ -91,9 +98,15 @@ export async function POST(req: Request) {
     }
   }
 
-  const systemPrompt = eventContext
+  // Guard: if the client didn't attach event data (network hiccup, bad
+  // request), the model has NOTHING real to recommend. Without this it will
+  // happily invent events and fake Partiful URLs. Force a graceful refusal
+  // instead — never let it fabricate.
+  const hasContext =
+    typeof eventContext === "string" && eventContext.trim().length > 0;
+  const systemPrompt = hasContext
     ? `${BASE_SYSTEM_PROMPT}\n\n${eventContext}`
-    : BASE_SYSTEM_PROMPT;
+    : `${BASE_SYSTEM_PROMPT}\n\nIMPORTANT: No event data is currently loaded. You have ZERO events to work with. Do NOT name, invent, or link any events or URLs whatsoever. Tell the user the live event data failed to load and ask them to refresh the page and try again. Keep it to one short sentence.`;
 
   const result = streamText({
     model: anthropic("claude-sonnet-4-6"),
