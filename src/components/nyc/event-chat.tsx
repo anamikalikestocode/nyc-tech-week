@@ -134,10 +134,26 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
     }
   }
 
-  // Collapsed state — unified card with embedded input
+  // Collapsed state — the entire card is one tap/click target that opens the
+  // full chat. This lets users reopen an existing conversation without having
+  // to send a new message (user feedback). The real input lives in the
+  // expanded view and auto-focuses on open.
   if (!isExpanded) {
+    const hasHistory = messages.length > 0;
+
     return (
-      <div className="mb-6 rounded-[18px] border-[1.5px] border-[#00FF9C]/55 [background:color-mix(in_srgb,#00FF9C_9%,#F7F2E7)] shadow-[0_4px_24px_-8px_rgba(0,255,156,0.22)] transition-all duration-[160ms] hover:border-[#00FF9C]">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => setIsExpanded(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsExpanded(true);
+          }
+        }}
+        className="mb-6 cursor-pointer rounded-[18px] border-[1.5px] border-[#00FF9C]/55 [background:color-mix(in_srgb,#00FF9C_9%,#F7F2E7)] shadow-[0_4px_24px_-8px_rgba(0,255,156,0.22)] transition-all duration-[160ms] hover:border-[#00FF9C]"
+      >
         {/* Header row */}
         <div className="flex items-center gap-4 p-4 pb-3">
           <div className="flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-[#00FF9C] text-[22px] text-[#0C0C0A]">
@@ -150,50 +166,43 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
             >
               Ask me anything
             </h2>
-            <p className="text-[13px] text-[#766E5C]">NYC Tech Week · live data</p>
+            <p className="text-[13px] text-[#766E5C]">
+              {hasHistory ? "Tap to continue your chat" : "NYC Tech Week · live data"}
+            </p>
           </div>
         </div>
 
-        {/* Prompt chips */}
-        <div className="flex gap-2 overflow-x-auto px-4 pb-3 scrollbar-hide">
-          {SUGGESTED_PROMPTS.map((prompt) => (
-            <button
-              key={prompt}
-              onClick={() => handlePromptClick(prompt)}
-              className="shrink-0 rounded-full border border-[#00FF9C]/50 bg-[#00FF9C]/15 px-3 py-1.5 text-[13px] font-medium text-[#0A8F5A] transition-colors hover:bg-[#00FF9C]/25 hover:border-[#00FF9C]"
-            >
-              {prompt}
-            </button>
-          ))}
-        </div>
+        {/* Prompt chips — tapping one sends that prompt; stopPropagation keeps
+            the chip's own action from also triggering the card's open handler
+            (handlePromptClick already opens the chat). */}
+        {!hasHistory && (
+          <div className="flex gap-2 overflow-x-auto px-4 pb-3 scrollbar-hide">
+            {SUGGESTED_PROMPTS.map((prompt) => (
+              <button
+                key={prompt}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePromptClick(prompt);
+                }}
+                className="shrink-0 rounded-full border border-[#00FF9C]/50 bg-[#00FF9C]/15 px-3 py-1.5 text-[13px] font-medium text-[#0A8F5A] transition-colors hover:bg-[#00FF9C]/25 hover:border-[#00FF9C]"
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        )}
 
-        {/* Input — sits inside the card, separated by a hairline */}
+        {/* Input — visual trigger only. Tapping it opens the full chat (the
+            click bubbles to the card), where the real textarea is focused. */}
         <div className="border-t border-[#00FF9C]/25 px-3 pb-3 pt-2.5">
-          <form
-            onSubmit={onSubmit}
-            className="flex items-center gap-2 rounded-[12px] border border-[#CDC1A6] bg-[#F7F2E7] px-4 py-2.5 transition-colors focus-within:border-[#00FF9C]"
-          >
-            <textarea
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                e.target.style.height = "auto";
-                e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask about events, vibes, availability…"
-              rows={1}
-              className="flex-1 resize-none bg-transparent text-[16px] leading-snug text-[#1C1A14] placeholder:text-[#A79E89] outline-none"
-              style={{ maxHeight: "120px" }}
-            />
-            <button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#1C1A14] text-[#E9E2D3] transition-all disabled:opacity-20"
-            >
+          <div className="flex items-center gap-2 rounded-[12px] border border-[#CDC1A6] bg-[#F7F2E7] px-4 py-2.5">
+            <span className="flex-1 truncate text-[16px] leading-snug text-[#A79E89]">
+              {hasHistory ? "Continue the conversation…" : "Ask about events, vibes, availability…"}
+            </span>
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#1C1A14] text-[#E9E2D3]">
               <ArrowUp className="size-4" strokeWidth={2.5} />
-            </button>
-          </form>
+            </span>
+          </div>
         </div>
       </div>
     );
