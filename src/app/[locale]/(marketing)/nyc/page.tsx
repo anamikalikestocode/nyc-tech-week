@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { fetchAllEvents } from "@/lib/data/events";
 import { EventDirectory } from "@/components/nyc/event-directory";
+import { EventCard } from "@/components/nyc/event-card";
 
 export const revalidate = 300;
 
@@ -61,9 +62,41 @@ export default async function NycTechWeekPage() {
         </div>
       </div>
 
-      <Suspense>
+      {/*
+        EventDirectory uses nuqs (useSearchParams), which opts the whole
+        subtree out of server rendering. With an empty Suspense fallback the
+        server sent NOTHING below the header — so any browser that didn't
+        finish hydrating (notably the in-app browser opened from a tweet)
+        showed only the header. We give Suspense a real, server-rendered
+        fallback: the first 60 events (default date sort). These cards land in
+        the SSR HTML and are visible immediately in every browser; once the
+        client hydrates, the interactive directory (filters, search, chat)
+        swaps in.
+      */}
+      <Suspense fallback={<InitialEventGrid events={events} />}>
         <EventDirectory events={events} />
       </Suspense>
     </main>
+  );
+}
+
+function InitialEventGrid({ events }: { events: Awaited<ReturnType<typeof fetchAllEvents>> }) {
+  const initial = [...events]
+    .sort((a, b) => {
+      const d = a.date.localeCompare(b.date);
+      return d !== 0 ? d : a.time.localeCompare(b.time);
+    })
+    .slice(0, 60);
+
+  return (
+    <div className="min-h-screen bg-[#E9E2D3]">
+      <div className="mx-auto max-w-[1200px] px-[22px] py-6">
+        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+          {initial.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
