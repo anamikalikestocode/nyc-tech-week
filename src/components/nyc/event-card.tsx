@@ -22,24 +22,19 @@ function formatDate(date: string): string {
 function CompanyLogo({ company }: { company: string }) {
   if (!company) return null;
   const domain = company.toLowerCase().replace(/[^a-z0-9]/g, "") + ".com";
+  // Render the logo as a CSS background-image, NOT an <img>. A failed or
+  // still-loading background-image shows nothing (just the neutral tan box) —
+  // the browser never paints its broken-image "?" glyph. An <img> would flash
+  // that glyph during the pre-hydration window before the onError handler runs
+  // (very visible in the Twitter in-app browser). Pure CSS, no JS, so it
+  // behaves identically before and after hydration. The company name is shown
+  // right next to this box, so no letter fallback is needed.
   return (
-    <span className="relative inline-flex size-[18px] shrink-0 items-center justify-center overflow-hidden rounded-[5px] bg-[#F0E8D9]">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={`https://logo.clearbit.com/${domain}`}
-        alt=""
-        className="absolute inset-0 size-full object-contain"
-        onError={(e) => {
-          const img = e.target as HTMLImageElement;
-          img.style.display = "none";
-          const fb = img.nextElementSibling as HTMLElement | null;
-          if (fb) fb.style.display = "flex";
-        }}
-      />
-      <span className="absolute inset-0 hidden items-center justify-center text-[9px] font-medium text-[#766E5C]">
-        {company[0]?.toUpperCase()}
-      </span>
-    </span>
+    <span
+      aria-hidden="true"
+      className="inline-block size-[18px] shrink-0 rounded-[5px] bg-[#F0E8D9] bg-contain bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(https://logo.clearbit.com/${domain})` }}
+    />
   );
 }
 
