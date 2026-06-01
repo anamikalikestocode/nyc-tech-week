@@ -142,13 +142,17 @@ export async function POST(req: Request) {
       {
         role: "system",
         content: systemPrompt,
-        // Cache the large system + event-context block (~67k tokens). The
-        // event context is byte-identical for every user (deterministic build
-        // from the same ISR data), so ONE cache write serves all visitors.
-        // Use a 1-HOUR TTL, not the default 5-min: traffic is intermittent, so
-        // a 5-min window expires between visitors and almost every request pays
-        // full input price (~$0.20). A 1h TTL costs 2x to write once but keeps
-        // reads at ~$0.02 for the whole hour — ~5-7x cheaper overall.
+        // Cache the large system + event-context block (~67k tokens). It's
+        // byte-identical for every user (deterministic build from the shared
+        // data snapshot), so ONE cache write serves all visitors in a window.
+        //
+        // TTL must out-live the CONTENT, not just the traffic gaps. The event
+        // context only changes when the data cache refreshes — now every 30 min
+        // (events.ts CACHE_TTL). A 1h TTL comfortably spans that 30-min content
+        // window even through traffic gaps, so the 67k block is written ~2x/hr
+        // and every other request is a ~0.1x-price cache read. (Previously the
+        // data refreshed every 5 min, so this block was rewritten ~12x/hr no
+        // matter the TTL — the fix was lengthening the data window, not the TTL.)
         providerOptions: {
           anthropic: { cacheControl: { type: "ephemeral", ttl: "1h" } },
         },

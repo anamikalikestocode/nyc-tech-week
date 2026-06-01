@@ -3,7 +3,10 @@ import { fetchAllEvents } from "@/lib/data/events";
 import { EventDirectory } from "@/components/nyc/event-directory";
 import { EventCard } from "@/components/nyc/event-card";
 
-export const revalidate = 300;
+// 30 min — aligned with the data cache (events.ts CACHE_TTL) and the nyc-chat
+// 1h prompt cache. Regenerating more often just churns the cached event context
+// for no user-visible benefit (RSVP counts barely move in 30 min).
+export const revalidate = 1800;
 
 function StatCell({ label, value, accent, danger }: { label: string; value: string; accent?: boolean; danger?: boolean }) {
   const valueColor = danger ? "text-[#D8442B]" : accent ? "text-[#0A8F5A]" : "text-[#1C1A14]";

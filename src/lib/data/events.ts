@@ -317,7 +317,15 @@ interface RawEvent {
 // Module-level cache so concurrent calls (e.g. /en/nyc + /fr/nyc at build) don't scrape twice
 let _cachedPromise: Promise<TechWeekEvent[]> | null = null;
 let _cacheTime = 0;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+// 30 min, deliberately aligned with the nyc-chat Anthropic prompt cache.
+// The ~67k-token event context (sent to the model every chat) is only worth
+// caching while it stays byte-identical — but every re-scrape pulls fresh RSVP
+// counts, changing the string and invalidating the cache. At a 5-min refresh
+// the prompt cache was rewritten ~12x/hour (expensive). Guest counts / approval
+// rates don't move meaningfully in 30 min, so a 30-min data window is
+// imperceptible to users and lets the 1h prompt cache actually amortize
+// (~2 writes/hour instead of ~12; the rest are cheap cache reads).
+const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 export function fetchAllEvents(): Promise<TechWeekEvent[]> {
   const now = Date.now();
@@ -362,7 +370,7 @@ async function _fetchAllEventsImpl(): Promise<TechWeekEvent[]> {
         referer: "https://www.tech-week.com/calendar/nyc",
       },
       body: payload,
-      next: { revalidate: 300 },
+      next: { revalidate: 1800 },
     });
 
     if (!res.ok) break;
