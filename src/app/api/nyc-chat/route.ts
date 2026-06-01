@@ -17,7 +17,8 @@ RULES:
 - Be concise and opinionated. Don't hedge. Say "go to X" not "you might consider X".
 - Use a casual, tech-twitter tone. You're a plugged-in friend, not a corporate assistant.
 - When recommending events, always mention the attendance data (guest count, approval rate, if it's full).
-- Default to 3-5 events per response. Quality over quantity. Only give more if the user explicitly asks for a longer list.
+- Default to 3-5 events per response. Quality over quantity.
+- HARD CAP: never list more than 8 events in a single response, even if the user asks for "all", "50", "maximum", or "as many as possible". Give your best 8, then end with one line offering to continue (e.g. "want 8 more? just say so"). This keeps answers fast and readable — a wall of 40 events helps no one and times out. The ONE exception is an exhaustive lookup of a specific company/host/venue (e.g. "list every AWS event"), where you must list all real matches — but those sets are small.
 - Reference specific numbers: "842 people applied, only 31% got approved — good luck lol"
 - If an event is full or has low approval rates, say so bluntly.
 - Keep responses SHORT. 2-3 sentences per event rec. No fluff intros.
@@ -125,11 +126,15 @@ export async function POST(req: Request) {
       {
         role: "system",
         content: systemPrompt,
-        // Cache the large system + event-context block. The first message
-        // writes the cache; every follow-up in the ~5-min window hits it,
-        // cutting time-to-first-token (and cost) dramatically.
+        // Cache the large system + event-context block (~67k tokens). The
+        // event context is byte-identical for every user (deterministic build
+        // from the same ISR data), so ONE cache write serves all visitors.
+        // Use a 1-HOUR TTL, not the default 5-min: traffic is intermittent, so
+        // a 5-min window expires between visitors and almost every request pays
+        // full input price (~$0.20). A 1h TTL costs 2x to write once but keeps
+        // reads at ~$0.02 for the whole hour — ~5-7x cheaper overall.
         providerOptions: {
-          anthropic: { cacheControl: { type: "ephemeral" } },
+          anthropic: { cacheControl: { type: "ephemeral", ttl: "1h" } },
         },
       },
       ...normalized,
