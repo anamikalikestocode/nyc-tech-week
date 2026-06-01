@@ -80,7 +80,7 @@ function normalizeMessages(
 }
 
 export async function POST(req: Request) {
-  const { messages, eventContext } = await req.json();
+  const { messages, eventContext, sessionId } = await req.json();
 
   const normalized = normalizeMessages(messages);
 
@@ -106,7 +106,14 @@ export async function POST(req: Request) {
         // Supabase's builder is a PromiseLike (no .catch), so we can't chain.
         void createAdminClient()
           .from("nyc_chat_queries")
-          .insert({ query, turn_index: turnIndex })
+          .insert({
+            query,
+            turn_index: turnIndex,
+            // Anonymous first-party session id (random UUID from the visitor's
+            // localStorage) so turns group into conversations. No PII.
+            session_id:
+              typeof sessionId === "string" ? sessionId.slice(0, 64) : null,
+          })
           .then(
             ({ error }) => {
               if (error) console.error("[nyc-chat] log insert failed:", error.message);

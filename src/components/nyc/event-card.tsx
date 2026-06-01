@@ -1,6 +1,7 @@
 "use client";
 import { TOPIC_COLORS, type TechWeekEvent } from "@/lib/data/events";
 import { Clock, MapPin, ExternalLink, Lock, Calendar } from "lucide-react";
+import { trackRsvpClick } from "@/lib/nyc-session";
 
 function formatTime(time: string): string {
   const [h, m] = time.split(":");
@@ -73,6 +74,16 @@ export function EventCard({ event }: { event: TechWeekEvent }) {
       href={event.url || undefined}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={
+        event.url
+          ? () =>
+              trackRsvpClick({
+                eventUrl: event.url,
+                eventName: event.name,
+                source: "card",
+              })
+          : undefined
+      }
       className={
         "group flex flex-col gap-[11px] rounded-[14px] border border-[#DDD3BD] bg-[#F7F2E7] p-4 transition-all duration-[160ms] " +
         (event.url ? "cursor-pointer hover:-translate-y-0.5 hover:border-[#00FF9C] hover:shadow-[0_16px_34px_-18px_rgba(40,30,10,0.3)]" : "cursor-default")

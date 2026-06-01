@@ -5,6 +5,22 @@ import { TextStreamChatTransport } from "ai";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { ArrowUp, X } from "lucide-react";
 import type { TechWeekEvent } from "@/lib/data/events";
+import { getSessionId, trackRsvpClick } from "@/lib/nyc-session";
+
+// Delegated click handler for streamed assistant messages: the response HTML is
+// injected via dangerouslySetInnerHTML, so we can't put onClick on each link.
+// Instead listen on the container and detect anchor clicks bubbling up.
+function handleChatLinkClick(e: React.MouseEvent<HTMLDivElement>) {
+  const anchor = (e.target as HTMLElement).closest("a");
+  const href = anchor?.getAttribute("href");
+  if (href) {
+    trackRsvpClick({
+      eventUrl: href,
+      eventName: anchor?.textContent?.trim() || undefined,
+      source: "chat",
+    });
+  }
+}
 
 const SUGGESTED_PROMPTS = [
   "Which events are harder to get into than YC?",
@@ -86,13 +102,17 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
 
   const eventContext = useMemo(() => buildEventContext(events), [events]);
 
+  // Anonymous session id so the API can group chat turns into conversations.
+  // Computed once on the client (returns "" during SSR, real id after mount).
+  const sessionId = useMemo(() => getSessionId(), []);
+
   const transport = useMemo(
     () =>
       new TextStreamChatTransport({
         api: "/api/nyc-chat",
-        body: { eventContext },
+        body: { eventContext, sessionId },
       }),
-    [eventContext]
+    [eventContext, sessionId]
   );
 
   const { messages, sendMessage, status } = useChat({ transport });
@@ -284,7 +304,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
                         </div>
                       ) : text ? (
                         <div className="text-[15px] leading-[1.7] text-[#1C1A14] [&_strong]:font-semibold [&_strong]:text-[#1C1A14]">
-                          <div dangerouslySetInnerHTML={{ __html: formatResponse(text) }} />
+                          <div onClick={handleChatLinkClick} dangerouslySetInnerHTML={{ __html: formatResponse(text) }} />
                         </div>
                       ) : (
                         <TypingIndicator />
@@ -384,7 +404,7 @@ export function EventChat({ events }: { events: TechWeekEvent[] }) {
                         </div>
                       ) : text ? (
                         <div className="max-w-[90%] text-[14px] leading-[1.7] text-[#1C1A14] [&_strong]:font-semibold [&_strong]:text-[#1C1A14]">
-                          <div dangerouslySetInnerHTML={{ __html: formatResponse(text) }} />
+                          <div onClick={handleChatLinkClick} dangerouslySetInnerHTML={{ __html: formatResponse(text) }} />
                         </div>
                       ) : (
                         <TypingIndicator />
