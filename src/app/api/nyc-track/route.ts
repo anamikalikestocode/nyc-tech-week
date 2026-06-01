@@ -25,16 +25,16 @@ export async function POST(req: Request) {
         source: body?.source === "chat" ? "chat" : body?.source === "card" ? "card" : "unknown",
       };
 
-      // Fire-and-forget: a logging failure must never affect the user.
-      void createAdminClient()
+      // AWAIT the insert — do NOT fire-and-forget here. This route returns
+      // immediately after, and on Vercel the serverless instance can freeze
+      // the moment the response is sent, killing any still-pending promise.
+      // (The chat route gets away with fire-and-forget only because its
+      // streaming response keeps the function alive.) The await adds a few ms
+      // and sendBeacon ignores response timing anyway.
+      const { error } = await createAdminClient()
         .from("nyc_rsvp_clicks")
-        .insert(row)
-        .then(
-          ({ error }) => {
-            if (error) console.error("[nyc-track] insert failed:", error.message);
-          },
-          (e) => console.error("[nyc-track] insert threw:", e)
-        );
+        .insert(row);
+      if (error) console.error("[nyc-track] insert failed:", error.message);
     }
   } catch (e) {
     console.error("[nyc-track] bad request:", e);
