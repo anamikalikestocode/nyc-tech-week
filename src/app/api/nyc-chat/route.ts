@@ -137,7 +137,7 @@ export async function POST(req: Request) {
     : `${BASE_SYSTEM_PROMPT}\n\nIMPORTANT: No event data is currently loaded. You have ZERO events to work with. Do NOT name, invent, or link any events or URLs whatsoever. Tell the user the live event data failed to load and ask them to refresh the page and try again. Keep it to one short sentence.`;
 
   const result = streamText({
-    model: anthropic("claude-sonnet-4-6"),
+    model: anthropic("claude-haiku-4-5"),
     messages: [
       {
         role: "system",
