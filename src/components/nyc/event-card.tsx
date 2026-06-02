@@ -63,11 +63,63 @@ function StatusBadge({ event }: { event: TechWeekEvent }) {
 // Keep TOPIC_COLORS imported to avoid unused import lint error (used indirectly if needed later)
 void TOPIC_COLORS;
 
+// Circular approval-rate gauge: a ring with the % in the middle. Replaces the
+// old full-width bar — frees the whole horizontal strip for other content and
+// reads faster. Low rates (<=30%) go red, healthy ones green. Pure SVG, no JS.
+function ApprovalRing({ rate }: { rate: number }) {
+  const size = 50;
+  const stroke = 4.5;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const pct = Math.min(100, Math.max(0, rate));
+  const dashOffset = circumference * (1 - pct / 100);
+  const low = rate <= 30;
+  const color = low ? "#D8442B" : "#0A8F5A";
+  const track = low ? "#EAD3CC" : "#CDC1A6";
+
+  return (
+    <div
+      className="relative shrink-0"
+      style={{ width: size, height: size }}
+      title={`${rate}% approval rate`}
+    >
+      <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={track} strokeWidth={stroke} />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={dashOffset}
+          className="transition-[stroke-dashoffset] duration-[500ms] ease-out"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className={"tabular-nums text-[14px] font-extrabold leading-none " + (low ? "text-[#D8442B]" : "text-[#1C1A14]")}>
+          {rate}
+          <span className="text-[12px] font-bold">%</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function EventCard({ event }: { event: TechWeekEvent }) {
   const p = event.partiful;
-  const total = p ? p.approvedCount + p.pendingCount : 0;
-  const approvalRate = p && p.guestAction === "APPLY" && total > 0
-    ? Math.round((p.approvedCount / total) * 100) : null;
+  // Approval rate needs the "applied but not yet approved" signal (pendingCount,
+  // derived from Partiful's respondedGuestCount). Partiful stripped that field
+  // from the public payload, so pendingCount is now ~always 0 — and
+  // approved/(approved+0) would render a fake 100%. Only show the rate when a
+  // real pending signal exists; otherwise suppress the ring entirely (the
+  // approved/going count below still shows, since that data survived).
+  const approvalRate =
+    p && p.guestAction === "APPLY" && p.pendingCount > 0
+      ? Math.round((p.approvedCount / (p.approvedCount + p.pendingCount)) * 100)
+      : null;
 
   return (
     <a
@@ -112,7 +164,7 @@ export function EventCard({ event }: { event: TechWeekEvent }) {
 
       {/* Attendance + approval */}
       {p && (p.guestAction === "APPLY" ? p.approvedCount > 0 : p.guestCount > 0) && (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex shrink-0 items-baseline gap-1">
             <span className="text-2xl font-extrabold tabular-nums tracking-[-0.03em] text-[#1C1A14]">
               {(p.guestAction === "APPLY" ? p.approvedCount : p.guestCount).toLocaleString()}
@@ -120,17 +172,9 @@ export function EventCard({ event }: { event: TechWeekEvent }) {
             <span className="text-[10.5px] text-[#766E5C]">{p.guestAction === "APPLY" ? "approved" : "going"}</span>
           </div>
           {approvalRate !== null && (
-            <div className="min-w-0 flex-1">
-              <div className="mb-1.5 flex items-center justify-between">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#766E5C]">approval</span>
-                <span className={"tabular-nums text-[12px] font-bold " + (approvalRate <= 30 ? "text-[#D8442B]" : "text-[#1C1A14]")}>{approvalRate}%</span>
-              </div>
-              <div className="h-1.5 w-full rounded-full bg-[#CDC1A6]">
-                <div
-                  className="h-1.5 rounded-full transition-[width] duration-[400ms]"
-                  style={{ width: `${Math.min(100, approvalRate)}%`, background: approvalRate <= 30 ? "#D8442B" : "#00FF9C" }}
-                />
-              </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#766E5C]">approval</span>
+              <ApprovalRing rate={approvalRate} />
             </div>
           )}
         </div>

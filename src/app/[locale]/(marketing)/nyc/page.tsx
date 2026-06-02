@@ -27,13 +27,15 @@ export default async function NycTechWeekPage() {
     return sum + (p.guestAction === "APPLY" ? p.approvedCount : p.guestCount);
   }, 0);
   const fullEvents = events.filter((e) => e.partiful?.atCapacity).length;
+  // Only events with a real pending signal (people applied but not yet
+  // approved) yield a meaningful approval rate. Partiful stripped that data, so
+  // this is now ~empty — return null and hide the stat rather than show a fake
+  // 100% (or a misleading 0%).
   const avgApproval = (() => {
     const applyEvents = events.filter(
-      (e) =>
-        e.partiful?.guestAction === "APPLY" &&
-        (e.partiful.approvedCount + e.partiful.pendingCount) > 0
+      (e) => e.partiful?.guestAction === "APPLY" && e.partiful.pendingCount > 0
     );
-    if (applyEvents.length === 0) return 0;
+    if (applyEvents.length === 0) return null;
     const total = applyEvents.reduce((sum, e) => {
       const p = e.partiful!;
       return sum + p.approvedCount / (p.approvedCount + p.pendingCount);
@@ -60,7 +62,9 @@ export default async function NycTechWeekPage() {
             <StatCell label="Events" value={events.length.toLocaleString()} />
             <StatCell label="RSVPs" value={totalGuests.toLocaleString()} accent />
             <StatCell label="Full" value={String(fullEvents)} danger />
-            <StatCell label="Avg approval" value={`${avgApproval}%`} accent />
+            {avgApproval !== null && (
+              <StatCell label="Avg approval" value={`${avgApproval}%`} accent />
+            )}
           </div>
         </div>
       </div>
