@@ -56,6 +56,17 @@ export default async function NycTechWeekPage() {
           <p className="mt-3 max-w-[600px] text-base leading-[1.55] text-[#766E5C]">
             The a16z tech week website is kinda bad, so here&apos;s a better one.
           </p>
+          <p className="mt-1.5 text-sm font-medium text-[#766E5C]">
+            x:{" "}
+            <a
+              href="https://x.com/anamika__x"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#0A8F5A] underline underline-offset-2 transition-opacity hover:opacity-80"
+            >
+              @anamika__x
+            </a>
+          </p>
 
           {/* Stat ticker */}
           <div className="mt-5 grid w-full grid-cols-4 items-stretch divide-x divide-[#CDC1A6] rounded-xl border border-[#CDC1A6] bg-[#F7F2E7] sm:w-fit sm:flex">
